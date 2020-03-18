@@ -1,18 +1,19 @@
 package dev;
 
-import dev.domain.Collegue;
-import dev.domain.Role;
-import dev.domain.RoleCollegue;
-import dev.domain.Version;
-import dev.repository.CollegueRepo;
-import dev.repository.VersionRepo;
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import dev.domain.Collegue;
+import dev.domain.Role;
+import dev.domain.RoleCollegue;
+import dev.domain.Version;
+import dev.repository.CollegueRepo;
+import dev.repository.VersionRepo;
 
 /**
  * Code de démarrage de l'application.
@@ -37,8 +38,10 @@ public class StartupListener {
     public void onStart() {
         this.versionRepo.save(new Version(appVersion));
 
-        // Création de deux utilisateurs
-
+        System.out.println("Création de deux utilisateurs : "); 
+        System.out.println(" - Admin "); 
+        System.out.println(" - Dev "); 
+ 
         Collegue col1 = new Collegue();
         col1.setNom("Admin");
         col1.setPrenom("DEV");
