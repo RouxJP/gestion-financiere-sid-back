@@ -28,14 +28,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.dgn.entites.notation.BilanSession;
+import org.apache.commons.lang3.time.DateUtils;
 import org.dgn.planification.sessions.StatutPreparation;
 import org.dgn.planification.sessions.StatutValidation;
-import org.dgn.utils.DateUtils;
+
+import dev.domain.notation.BilanSession;
 
 /**
  * Représente une session (une formation planifiée à une date donnée avec une

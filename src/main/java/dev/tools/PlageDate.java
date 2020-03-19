@@ -1,4 +1,4 @@
-package org.dgn.entites;
+package dev.domain.emargement;
 
 import java.time.LocalDate;
 
