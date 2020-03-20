@@ -1,4 +1,4 @@
-package dev.domain.emargement;
+package dev.domain.utils;
 
 import java.time.LocalDate;
 
