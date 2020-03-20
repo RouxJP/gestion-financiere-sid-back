@@ -31,11 +31,9 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.time.DateUtils;
-import org.dgn.planification.sessions.StatutPreparation;
-import org.dgn.planification.sessions.StatutValidation;
 
 import dev.domain.notation.BilanSession;
+import dev.domain.utils.DateUtils;
 
 /**
  * Représente une session (une formation planifiée à une date donnée avec une
@@ -100,10 +98,6 @@ public class Session implements Evenement, Cloneable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ID_SAL")
 	private Salle salle;
-
-	/** todoListe : TodoListePlanifiee */
-	@Transient
-	private TodoListePlanifiee todoListe;
 
 	/** dateMaj : LocalDateTime */
 	@Column(name = "DATE_MAJ")
@@ -288,7 +282,7 @@ public class Session implements Evenement, Cloneable {
 	 */
 	public boolean hasPlanificateur(String email) {
 
-		return StringUtils.isNotEmpty(email) && CollectionUtils.isNotEmpty(planificateurs)
+		return StringUtils.isNotEmpty(email) && planificateurs != null && planificateurs.size() > 0
 				&& planificateurs.stream().filter(p -> p.getEmail().equals(email)).findAny().isPresent();
 	}
 
@@ -300,7 +294,7 @@ public class Session implements Evenement, Cloneable {
 	 * @return boolean
 	 */
 	public boolean hasFormateur(String email) {
-		return StringUtils.isNotEmpty(email) && CollectionUtils.isNotEmpty(cours)
+		return StringUtils.isNotEmpty(email) && cours != null && cours.size() > 0
 				&& cours.stream().filter(c -> c.getFormateur() != null && c.getFormateur().getEmail().equals(email))
 						.findAny().isPresent();
 	}
@@ -501,24 +495,6 @@ public class Session implements Evenement, Cloneable {
 	/**
 	 * Getter
 	 * 
-	 * @return the todoListe
-	 */
-	public TodoListePlanifiee getTodoListe() {
-		return todoListe;
-	}
-
-	/**
-	 * Setter
-	 * 
-	 * @param todoListe the todoListe to set
-	 */
-	public void setTodoListe(TodoListePlanifiee todoListe) {
-		this.todoListe = todoListe;
-	}
-
-	/**
-	 * Getter
-	 * 
 	 * @return the fermes
 	 */
 	public List<PeriodeFermeeSession> getFermes() {
@@ -615,7 +591,7 @@ public class Session implements Evenement, Cloneable {
 	 * @return {@link CoursPlanifie}
 	 */
 	public CoursPlanifie extraireCoursParDateDebut(LocalDate dateDebut) {
-		if (CollectionUtils.isEmpty(cours)) {
+		if (cours == null || cours.size() == 0) {
 			return null;
 		}
 		for (CoursPlanifie cc : cours) {
