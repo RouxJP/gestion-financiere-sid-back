@@ -1,6 +1,6 @@
 package dev.domain;
 
-import org.dgn.planification.sessions.StatutValidation;
+//import org.dgn.planification.sessions.StatutValidation;
 
 /**
  * Un évènement est toute entité ayant une date de début et une date de fin

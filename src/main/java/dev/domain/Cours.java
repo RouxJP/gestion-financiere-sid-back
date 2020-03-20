@@ -25,7 +25,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.dgn.administration.modalitespedagogiques.ModalitePedagogiqueDto;
+//import org.dgn.administration.modalitespedagogiques.ModalitePedagogiqueDto;
 
 /**
  * Représente un cours donné lors d'une formation avec un libellé et une durée

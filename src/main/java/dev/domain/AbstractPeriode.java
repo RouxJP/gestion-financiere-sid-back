@@ -11,7 +11,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 
-import org.dgn.planification.sessions.StatutValidation;
+//import org.dgn.planification.sessions.StatutValidation;
 
 /**
  * Représente une période abstraite

@@ -216,15 +216,6 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 		return this.email;
 	}
 
-	/**
-	 * Retourne si oui ou non l'utilisateur a le type de rôle passé en paramètre
-	 * 
-	 * @param type de role
-	 * @return boolean
-	 */
-	public boolean hasRole(TypeRole type) {
-		return roles.stream().filter(r -> r.getAuthority().equals(type.name())).count() >= 1;
-	}
 
 	@Override
 	public int hashCode() {

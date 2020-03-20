@@ -3,7 +3,7 @@ package dev.domain;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.dgn.utils.evaluation.Criteria;
+//import org.dgn.utils.evaluation.Criteria;
 
 /**
  * Représente les 3 types de notes: SAVOIR, SAVOIR_FAIRE et SAVOIR_ETRE
@@ -11,7 +11,7 @@ import org.dgn.utils.evaluation.Criteria;
  * @author DIGINAMIC
  *
  */
-public enum TypeNote implements Criteria {
+public enum TypeNote  {
 
 	/** SAVOIR : TypeNote */
 	SAVOIR("Savoir", 0),

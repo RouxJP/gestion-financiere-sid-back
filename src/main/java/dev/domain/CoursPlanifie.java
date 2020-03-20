@@ -17,9 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.dgn.planification.sessions.StatutValidation;
+//import org.dgn.planification.sessions.StatutValidation;
 
 /**
  * Représente un cours planifié pour une session donnée
@@ -29,7 +28,7 @@ import org.dgn.planification.sessions.StatutValidation;
  */
 @Entity
 @Table(name = "COURS_PLANIFIE")
-public class CoursPlanifie implements Evenement, PlanningElement {
+public class CoursPlanifie implements Evenement {
 
 	/** identifiant */
 	@Id
@@ -169,7 +168,7 @@ public class CoursPlanifie implements Evenement, PlanningElement {
 		this.cours = cours;
 		this.formateur = formateur;
 	}
-
+/**
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof CoursPlanifie)) {
@@ -179,7 +178,7 @@ public class CoursPlanifie implements Evenement, PlanningElement {
 		return new EqualsBuilder().append(libelle, other.getLibelle()).append(dateDebut, other.getDateDebut())
 				.append(dateFin, other.getDateFin()).append(formateur, other.getFormateur()).isEquals();
 	}
-
+**/
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder().append(libelle).append(dateDebut).append(dateFin).append(formateur).toHashCode();
@@ -196,11 +195,13 @@ public class CoursPlanifie implements Evenement, PlanningElement {
 				+ dateFin + ", formateur=" + formateur + ", salle=" + salle + "]";
 	}
 
+	/*
 	@Override
 	public String getAttribut1() {
 		return Integer.toString(coefficient);
 	}
-
+	*/
+	
 	@Override
 	public String getNom() {
 		return libelle;
@@ -331,12 +332,12 @@ public class CoursPlanifie implements Evenement, PlanningElement {
 	public void setCoefficient(int coefficient) {
 		this.coefficient = coefficient;
 	}
-
+/*
 	@Override
 	public Utilisateur getIntervenant() {
 		return formateur;
 	}
-
+*/
 	/**
 	 * Getter for formateur
 	 * 
@@ -378,11 +379,12 @@ public class CoursPlanifie implements Evenement, PlanningElement {
 	 * 
 	 * @return the libelle
 	 */
+/*	
 	@Override
 	public String getLibelle() {
 		return libelle;
 	}
-
+*/
 	/**
 	 * Setter
 	 * 
@@ -397,11 +399,12 @@ public class CoursPlanifie implements Evenement, PlanningElement {
 	 * 
 	 * @return the duree
 	 */
+/*	
 	@Override
 	public int getDuree() {
 		return duree;
 	}
-
+*/
 	/**
 	 * Setter
 	 * 
@@ -507,11 +510,12 @@ public class CoursPlanifie implements Evenement, PlanningElement {
 	 * 
 	 * @return the modalitePedagogique
 	 */
+/*	
 	@Override
 	public ModalitePedagogique getModalitePedagogique() {
 		return modalitePedagogique;
 	}
-
+*/
 	/**
 	 * Setter
 	 * 
@@ -539,9 +543,9 @@ public class CoursPlanifie implements Evenement, PlanningElement {
 		public static CoursPlanifie getInstance(CoursPlanifie origin) {
 			CoursPlanifie coursPlanifie = new CoursPlanifie();
 			coursPlanifie.setId(origin.getId());
-			coursPlanifie.setLibelle(origin.getLibelle());
+//			coursPlanifie.setLibelle(origin.getLibelle());
 			coursPlanifie.setCoefficient(origin.getCoefficient());
-			coursPlanifie.setDuree(origin.getDuree());
+//			coursPlanifie.setDuree(origin.getDuree());
 			coursPlanifie.setDateDebut(origin.getDateDebut());
 			coursPlanifie.setDateFin(origin.getDateFin());
 			coursPlanifie.setFormateur(origin.getFormateur());
@@ -551,7 +555,7 @@ public class CoursPlanifie implements Evenement, PlanningElement {
 			coursPlanifie.setCours(origin.getCours());
 			coursPlanifie.setStatutValidation(origin.getStatutValidation());
 			coursPlanifie.setCommentaires(origin.getCommentaires());
-			coursPlanifie.setModalitePedagogique(origin.getModalitePedagogique());
+//			coursPlanifie.setModalitePedagogique(origin.getModalitePedagogique());
 			return coursPlanifie;
 		}
 

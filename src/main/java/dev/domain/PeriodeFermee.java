@@ -1,7 +1,5 @@
 package dev.domain;
 
-import java.time.LocalDate;
-
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,7 +16,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "PERIODE_FERME")
 @Cacheable(value = true)
-public class PeriodeFermee extends AbstractPeriode implements PlanningElement {
+//public class PeriodeFermee extends AbstractPeriode  {
+public class PeriodeFermee   {
 
 	/** type : représente le type de la période. Exemple: fermeture officielle */
 	@Column(name = "TYPE", length = 50, nullable = true)
@@ -32,49 +31,6 @@ public class PeriodeFermee extends AbstractPeriode implements PlanningElement {
 		super();
 	}
 
-	/**
-	 * Constructeur
-	 * 
-	 * @param date date de fermeture
-	 */
-	public PeriodeFermee(LocalDate date) {
-		super(date);
-	}
-
-	/**
-	 * Constructeur
-	 * 
-	 * @param dateDebut date de début
-	 * @param dateFin date de fin
-	 */
-	public PeriodeFermee(LocalDate dateDebut, LocalDate dateFin) {
-		super(dateDebut, dateFin);
-	}
-
-	@Override
-	public String getRessource() {
-		return "";
-	}
-
-	@Override
-	public Centre getCentre() {
-		return new TousCentres();
-	}
-
-	@Override
-	public String getLibelle() {
-		return "Fermeture du centre";
-	}
-
-	/**
-	 * Getter
-	 * 
-	 * @return the type
-	 */
-	@Override
-	public TypeEvenement getType() {
-		return type;
-	}
 
 	/**
 	 * Setter
