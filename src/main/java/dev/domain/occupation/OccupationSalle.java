@@ -7,8 +7,8 @@ import java.util.List;
 import dev.domain.Centre;
 import dev.domain.Evenement;
 import dev.domain.Salle;
+import dev.domain.StatutValidation;
 import dev.domain.TypeEvenement;
-import org.dgn.planification.sessions.StatutValidation;
 
 /**
  * Correspond à une période où une salle est occupée ou non occupée.
@@ -35,7 +35,7 @@ public class OccupationSalle implements Evenement {
 	 * Constructor
 	 * 
 	 * @param dateDebut date de début
-	 * @param dateFin date de fin
+	 * @param dateFin   date de fin
 	 */
 	public OccupationSalle(LocalDate dateDebut, LocalDate dateFin) {
 		this.dateDebut = dateDebut;
@@ -47,8 +47,8 @@ public class OccupationSalle implements Evenement {
 	 * Constructor
 	 * 
 	 * @param dateDebut date de début
-	 * @param dateFin date de fin
-	 * @param salle salle
+	 * @param dateFin   date de fin
+	 * @param salle     salle
 	 */
 	public OccupationSalle(LocalDate dateDebut, LocalDate dateFin, Salle salle) {
 		this(dateDebut, dateFin);
