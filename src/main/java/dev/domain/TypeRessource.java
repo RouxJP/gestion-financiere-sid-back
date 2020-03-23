@@ -8,9 +8,12 @@ package dev.domain;
  */
 public enum TypeRessource {
 
-	/** SALLE : TypeRessource */
+	/** Compte classe virtuelle */
+	COMPTE_CLASSE_VIRTUELLE,
+
+	/** Salle de formation */
 	SALLE,
 
-	/** UTILISATEUR : TypeRessource */
+	/** Formateur */
 	UTILISATEUR;
 }

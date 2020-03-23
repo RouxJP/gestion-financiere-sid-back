@@ -26,7 +26,8 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 /**
- * Représente un utilisateur (administrateur, planificateur, formateur, visiteur ou stagiaire)
+ * Représente un utilisateur (administrateur, planificateur, formateur, visiteur
+ * ou stagiaire)
  * 
  * @author DIGINAMIC
  *
@@ -55,7 +56,8 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	private String certifieDgn;
 
 	/**
-	 * Type de profil: administrateur, planificateur, formateur, visiteur ou stagiaire
+	 * Type de profil: administrateur, planificateur, formateur, visiteur ou
+	 * stagiaire
 	 */
 	@Column(nullable = false, length = 30)
 	@Enumerated(EnumType.STRING)
@@ -90,13 +92,15 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	private boolean enabled;
 
 	/**
-	 * checkRGPD : Indique que l'utilisateur a bien accepté les conditions d'utilisation de ses données
+	 * checkRGPD : Indique que l'utilisateur a bien accepté les conditions
+	 * d'utilisation de ses données
 	 */
 	@Column(name = "CHECK_RGPD", nullable = false)
 	private boolean checkRGPD = true;
 
 	/**
-	 * Token unique envoyé par mail à l'utilisateur dans un lien HTTP et qui permet l'activation de son compte.
+	 * Token unique envoyé par mail à l'utilisateur dans un lien HTTP et qui permet
+	 * l'activation de son compte.
 	 */
 	@Column(name = "TOKEN_INIT")
 	private String tokenInit;
@@ -110,13 +114,15 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	private LocalDateTime dateDesactivation;
 
 	/**
-	 * Date à laquelle le compte a été vérrouillé suite à plus de 3 tentatives de connexion infructueuses
+	 * Date à laquelle le compte a été vérrouillé suite à plus de 3 tentatives de
+	 * connexion infructueuses
 	 */
 	@Column(name = "DATE_LOCKED")
 	private LocalDateTime dateLocked;
 
 	/**
-	 * Compteur du nombre de tentatives de connexion infructueuses successives. Ce nb est remis à 0 si l'utilisateur se connecte correctement
+	 * Compteur du nombre de tentatives de connexion infructueuses successives. Ce
+	 * nb est remis à 0 si l'utilisateur se connecte correctement
 	 */
 	@Column(name = "NB_ESSAIS")
 	private int nbEssais;
@@ -134,7 +140,7 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	 */
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "ROLE_UTILISATEUR", joinColumns = @JoinColumn(name = "ID_UTILISATEUR", referencedColumnName = "ID"), inverseJoinColumns = @JoinColumn(name = "ID_ROLE", referencedColumnName = "ID"))
-	private List<Role> roles = new ArrayList<>();
+	private List<RoleCollegue> roles = new ArrayList<>();
 
 	/** Centres sur lesquels l'utilisateur est susceptible d'intervenir */
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -151,14 +157,16 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	private List<Indisponibilite> indisponibilites = new ArrayList<>();
 
 	/**
-	 * Uniquement pour un profil stagiaire: un stagiaire peut être rattaché à plusieurs sessions
+	 * Uniquement pour un profil stagiaire: un stagiaire peut être rattaché à
+	 * plusieurs sessions
 	 */
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "SESSION_STAGIAIRE", joinColumns = @JoinColumn(name = "ID_STAG", referencedColumnName = "ID"), inverseJoinColumns = @JoinColumn(name = "ID_SES", referencedColumnName = "ID"))
 	private List<Session> sessionsStagiaire = new ArrayList<>();
 
 	/**
-	 * Uniquement pour un planificateur : Liste des sessions pour lesquelles il est planificateur
+	 * Uniquement pour un planificateur : Liste des sessions pour lesquelles il est
+	 * planificateur
 	 */
 	@Transient
 	private List<Session> sessions = new ArrayList<>();
@@ -188,9 +196,9 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	/**
 	 * Constructor
 	 * 
-	 * @param id identifiant
-	 * @param email email
-	 * @param nom nom
+	 * @param id     identifiant
+	 * @param email  email
+	 * @param nom    nom
 	 * @param prenom prénom
 	 */
 	public Utilisateur(Long id, String email, String nom, String prenom) {
@@ -215,7 +223,6 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	public String getValue() {
 		return this.email;
 	}
-
 
 	@Override
 	public int hashCode() {
@@ -449,7 +456,7 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	 * 
 	 * @return the roles
 	 */
-	public List<Role> getRoles() {
+	public List<RoleCollegue> getRoles() {
 		return roles;
 	}
 
@@ -458,7 +465,7 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	 * 
 	 * @param roles the roles to set
 	 */
-	public void setRoles(List<Role> roles) {
+	public void setRoles(List<RoleCollegue> roles) {
 		this.roles = roles;
 	}
 
