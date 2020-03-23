@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>dev</groupId>
-	<artifactId>gestion-des-transports-back</artifactId>
+	<artifactId>gestion-financiere-sid-back</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
-	<name>gestion-des-transports-back</name>
+	<name>gestion-financiere-sid-back</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
