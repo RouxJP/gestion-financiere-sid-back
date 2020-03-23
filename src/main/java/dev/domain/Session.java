@@ -32,7 +32,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import dev.domain.notation.BilanSession;
 import dev.domain.utils.DateUtils;
 
 /**
@@ -86,14 +85,15 @@ public class Session implements Evenement, Cloneable {
 	@OneToMany(mappedBy = "session", fetch = FetchType.LAZY)
 	private List<CoursPlanifie> cours = new ArrayList<>();
 
-	/** Liste des dates fermées spécifique pour cette session */
+/** Non utilisée pour GF
+	/** Liste des dates fermées spécifique pour cette session 
 	@OneToMany(mappedBy = "session", fetch = FetchType.LAZY)
 	private List<PeriodeFermeeSession> fermes = new ArrayList<>();
 
-	/** bilans : List de BilanSession */
+	/** bilans : List de BilanSession 
 	@OneToMany(mappedBy = "session", fetch = FetchType.LAZY)
 	private List<BilanSession> bilans = new ArrayList<>();
-
+**/
 	/** Salle d'informatique par défaut dans laquelle aura lieu la formation */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ID_SAL")
@@ -107,18 +107,19 @@ public class Session implements Evenement, Cloneable {
 	@Column(name = "USER_MAJ")
 	private String userMaj;
 
-	/** previous : Session */
+/**  Non utilisé pour GF 
+	/** previous : Session 
 	@Column(name = "ID_PREVIOUS")
 	private Long idPrevious;
 
-	/** parent : Session */
+	/** parent : Session 
 	@Column(name = "ID_PARENT")
 	private Long idParent;
 
-	/** next : Session */
+	/** next : Session 
 	@Column(name = "ID_NEXT")
 	private Long idNext;
-
+**/
 	/** statutValidation : StatutValidation */
 	@Enumerated(EnumType.STRING)
 	@Column(name = "STATUT_VALIDATION")
@@ -495,24 +496,6 @@ public class Session implements Evenement, Cloneable {
 	/**
 	 * Getter
 	 * 
-	 * @return the fermes
-	 */
-	public List<PeriodeFermeeSession> getFermes() {
-		return fermes;
-	}
-
-	/**
-	 * Setter
-	 * 
-	 * @param fermes the fermes to set
-	 */
-	public void setFermes(List<PeriodeFermeeSession> fermes) {
-		this.fermes = fermes;
-	}
-
-	/**
-	 * Getter
-	 * 
 	 * @return the centre
 	 */
 	@Override
@@ -656,24 +639,6 @@ public class Session implements Evenement, Cloneable {
 	/**
 	 * Getter
 	 * 
-	 * @return the bilans
-	 */
-	public List<BilanSession> getBilans() {
-		return bilans;
-	}
-
-	/**
-	 * Setter
-	 * 
-	 * @param bilans the bilans to set
-	 */
-	public void setBilans(List<BilanSession> bilans) {
-		this.bilans = bilans;
-	}
-
-	/**
-	 * Getter
-	 * 
 	 * @return the planificateurs
 	 */
 	public Set<Utilisateur> getPlanificateurs() {
@@ -723,60 +688,6 @@ public class Session implements Evenement, Cloneable {
 	 */
 	public void setNbStagiaires(Integer nbStagiaires) {
 		this.nbStagiaires = nbStagiaires;
-	}
-
-	/**
-	 * Getter
-	 * 
-	 * @return the idParent
-	 */
-	public Long getIdParent() {
-		return idParent;
-	}
-
-	/**
-	 * Setter
-	 * 
-	 * @param idParent the idParent to set
-	 */
-	public void setIdParent(Long idParent) {
-		this.idParent = idParent;
-	}
-
-	/**
-	 * Getter
-	 * 
-	 * @return the idNext
-	 */
-	public Long getIdNext() {
-		return idNext;
-	}
-
-	/**
-	 * Setter
-	 * 
-	 * @param idNext the idNext to set
-	 */
-	public void setIdNext(Long idNext) {
-		this.idNext = idNext;
-	}
-
-	/**
-	 * Getter
-	 * 
-	 * @return the idPrevious
-	 */
-	public Long getIdPrevious() {
-		return idPrevious;
-	}
-
-	/**
-	 * Setter
-	 * 
-	 * @param idPrevious the idPrevious to set
-	 */
-	public void setIdPrevious(Long idPrevious) {
-		this.idPrevious = idPrevious;
 	}
 
 	/**
