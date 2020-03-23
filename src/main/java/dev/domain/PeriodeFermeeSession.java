@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "PERIODE_FERMEE_SESSION")
 @Cacheable(value = true)
-public class PeriodeFermeeSession  implements Cloneable {
+public class PeriodeFermeeSession extends AbstractPeriode implements Cloneable {
 
 	/** session : Session */
 	@ManyToOne
@@ -28,7 +28,6 @@ public class PeriodeFermeeSession  implements Cloneable {
 	public PeriodeFermeeSession() {
 		super();
 	}
-
 
 	/**
 	 * Getter
@@ -47,4 +46,20 @@ public class PeriodeFermeeSession  implements Cloneable {
 	public void setSession(Session session) {
 		this.session = session;
 	}
+
+	@Override
+	public String getRessource() {
+		return session.getNom();
+	}
+
+	@Override
+	public Centre getCentre() {
+		return session.getCentre();
+	}
+
+	@Override
+	public TypeEvenement getType() {
+		return TypeEvenement.INDISPO_SESSION;
+	}
+
 }
