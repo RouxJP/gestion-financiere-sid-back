@@ -10,6 +10,6 @@ public interface CentreRepo extends JpaRepository<Centre, Long> {
 	
 	Optional<Centre> findByNom(String nom);
 	Optional<Centre> findByAdresse(String adresse);
-	Optional<Centre> findByResponsable(String responsable);
+	
 
 }
