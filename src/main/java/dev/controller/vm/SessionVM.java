@@ -99,7 +99,7 @@ public class SessionVM {
 	/** calculMoyenneParBlocs : boolean */
 	private String calculMoyenneParBlocs;
 
-	
+
     public SessionVM(Long id, Centre centre, Societe societe, String nom, LocalDate dateDebut, LocalDate dateFin,
 			Formation formation, List<CoursPlanifie> cours, List<PeriodeFermeeSession> fermes,
 			List<BilanSession> bilans, Salle salle, LocalDateTime dateMaj, String userMaj, Long idPrevious,
@@ -143,14 +143,14 @@ public class SessionVM {
  		this.dateFin = session.getDateFin();
  		this.formation = session.getFormation();
  		this.cours = session.getCours() ;
- 		// NUGF this.fermes = session.getFermes() ;
- 		// NUGF this.bilans = session.getBilans() ;
+ 		this.fermes = session.getFermes() ;
+ 		this.bilans = session.getBilans() ;
  		this.salle = session.getSalle();
  		this.dateMaj = session.getDateMaj() ;
  		this.userMaj = session.getUserMaj() ;
- 		// NUGF this.idPrevious = session.getIdPrevious() ;
- 		// NUGF this.idParent = session.getIdParent() ;
- 		// NUGF this.idNext = session.getIdNext() ;
+ 		this.idPrevious = session.getIdPrevious() ;
+ 		this.idParent = session.getIdParent() ;
+ 		this.idNext = session.getIdNext() ;
  		this.statutValidation = session.getStatutValidation() ;
  		this.statutPreparation = session.getStatutPreparation() ;
  		this.stagiaires  = session.getStagiaires() ;

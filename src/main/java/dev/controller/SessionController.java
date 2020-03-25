@@ -25,7 +25,8 @@ import dev.repository.SessionRepo;
 @CrossOrigin
 public class SessionController {
 
-	private SessionRepo sessionRepo;
+	// Ici requestes d'acces au tables
+	private SessionRepo sessionRepo;	
 
 	private static final Logger LOG = LoggerFactory.getLogger(dev.controller.SessionController.class);
 
