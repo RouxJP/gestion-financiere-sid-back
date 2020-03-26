@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import dev.controller.vm.SessionLigne;
 import dev.controller.vm.SessionVM;
 import dev.domain.Session;
 import dev.exception.ElementNotFoundException;
@@ -65,31 +66,30 @@ public class SessionController {
 		return listeSessions.stream().map(col -> new SessionVM(col)).collect(Collectors.toList());
 	}
 
-	/**
-	 * Renvoie de tous les  Sessions commencant par 
-	 * établissement, formation, certif, salle, entreprise, période (date deb, date fin)
-	 * passés en paramètre
-	 * 
-	 * @param
-	 * @return
-	 */
+	/** Rechercher la liste des sessions filtrées par : 
+	*    - libellé : établissement / formation / salle / certification / entreprise
+	*    - période : date de début, date de fin
+	* Chaque filtre est optionnel et pour les libellés on peut saisir un sous libelle
+	* @return
+	*/
 	@RequestMapping(method = RequestMethod.GET, path = "SessionsFiltres") 
-	public List<SessionVM> getSessionFiltreParMatriculeNom( 
-			@RequestParam("etablissement") 	String etablissement, 
-            @RequestParam("formation") 		String formation,
-            @RequestParam("certif") 		String certif,
-            @RequestParam("salle") 			String salle,
-            @RequestParam("entreprise") 	String entreprise,
-            @RequestParam("dateDebut") 		String dateDebut,
-			@RequestParam("prenom") 		String dateFin) {
+	public List<SessionLigne> getSessionFiltreParMatriculeNom( 
+			@RequestParam("etablissement") 		String etablissement, 
+            @RequestParam("formation") 			String formation,
+            @RequestParam("certification") 		String certif,
+            @RequestParam("salle") 				String salle,
+            @RequestParam("entreprise") 		String entreprise,
+            @RequestParam("dateDebutSession") 	String dateDebut,
+			@RequestParam("dateFinSession") 	String dateFin) {
 		LOG.info( "*** Filtrer les Sessions par " 
 			        + "établissement / formation / certif / salle / entreprise / dateDebut / dateFin  : " 
 		            + etablissement + '/' + formation + '/' + certif + '/' + salle + '/'+ entreprise + '/'+ dateDebut + '/' + dateFin  );
-		List<Session> listeSessions = null ;
-// TO-DO
-//		   this.sessionRepo.findByMatriculeStartingWithAndNomStartingWithAndPrenomStartingWith( 
-//		   + etablissement, formation, certif, salle, entreprise, dateDebut, dateFin);
-		return listeSessions.stream().map(Session -> new SessionVM( Session)).collect(Collectors.toList());
+		
+		List<Session> listeSessionsRepo 	= this.sessionRepo.findByNomStartingWith( formation );
+		for( Session session : listeSessionsRepo) {
+				LOG.info( session.getNom());
+		} 
+		return listeSessionsRepo.stream().map(session -> new SessionLigne( session)).collect( Collectors.toList());
 	}
 
 

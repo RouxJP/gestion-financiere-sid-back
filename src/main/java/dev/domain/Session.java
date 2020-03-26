@@ -159,6 +159,30 @@ public class Session implements Evenement, Cloneable {
 	@Transient
 	private String calculMoyenneParBlocs;
 
+	/** Début : Zones de champs servant aux calculs financiers */
+	@Transient
+	private String 	calcSalleFormation;
+
+	@Transient
+	private String 	calcNomSociete;
+
+	@Transient
+	public Integer 	calcNbrStagiairesFormation;
+
+	@Transient
+	public Float 	calcCoutTotalHT;
+
+	@Transient
+	public Float 	calcChiffreAffaireTotalHT;
+
+	@Transient
+	public Float 	calcMargeBruteHT;
+
+	@Transient
+	public Float 	calcPourMargeBrute;
+	/** Fin   : Zones de champs servant aux calculs financiers */
+
+	
 	/**
 	 * Constructeur
 	 */
@@ -814,5 +838,129 @@ public class Session implements Evenement, Cloneable {
 	public void setCalculMoyenneParBlocs(String calculMoyenneParBlocs) {
 		this.calculMoyenneParBlocs = calculMoyenneParBlocs;
 	}
+	
+	/** Getter
+	 * @return the calcSalleFormation
+	 */
+	public String getCalcSalleFormation() {
+		return calcSalleFormation;
+	}
+	
+	/** Getter
+	 * @return the calcNbrStagiairesFormation
+	 */
+	public Integer getCalcNbrStagiairesFormation() {
+		return calcNbrStagiairesFormation;
+	}
+
+	/** Getter
+	 * @return the calcCoutTotalHT
+	 */
+	public Float getCalcCoutTotalHT() {
+		return calcCoutTotalHT;
+	}
+
+	/** Getter
+	 * @return the calcChiffreAffaireTotalHT
+	 */
+	public Float getCalcChiffreAffaireTotalHT() {
+		return calcChiffreAffaireTotalHT;
+	}
+
+	/** Getter
+	 * @return the calcMargeBruteHT
+	 */
+	public Float getCalcMargeBruteHT() {
+		return calcMargeBruteHT;
+	}
+
+	/** Getter
+	 * @return the calcPourMargeBrute
+	 */
+	public Float getCalcPourMargeBrute() {
+		return calcPourMargeBrute;
+	}
+
+	/** Getter
+	 * @return the calcNomSociete
+	 */
+	public String getCalcNomSociete() {
+		return calcNomSociete;
+	}
+
+
+	
+	/** Début : Zone de Calculs financiers */
+	/***************************************/
+	/**
+	 * Calcule le nom de la salle de formation : si il y en a plusieurs 
+	 * on affiche celle qui représente le plus de jour.
+	 * 
+	 * @return String : Nom de la salle de formation
+	 */
+	public String setCalcSalleFormation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Nombre de stagiaire de la formation : moyenne des stagiaires de la session 
+	 * au prorata du temps passé
+	 * @return Integer : Nombre de stagiaire de la formation
+	 */
+	public Integer setCalcNbrStagiairesFormation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public Float setCalcCoutTotalHT() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public Float setCalcChiffreAffaireTotalHT() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public Float setCalcMargeBruteHT() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public Float setCalcPourMargeBrute() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/** 
+	 * On met le nom de l'entreprise des stiagiares si il y en a qu'une, sinon INTER
+	 * @param calcNomSociete the calcNomSociete to set
+	 */
+	public void setCalcNomSociete(String calcNomSociete) {
+		this.calcNomSociete = calcNomSociete;
+	}
+
+	/** Fin : Zone de Calculs financiers */
+	/***************************************/
+
+
 
 }

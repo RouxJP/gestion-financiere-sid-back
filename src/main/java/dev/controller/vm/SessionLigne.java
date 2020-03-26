@@ -2,10 +2,12 @@ package dev.controller.vm;
 
 import java.time.LocalDate;
 
+import dev.domain.Session;
+
 /**
  * Structure modèlisant une session servant à communiquer avec la WEB API : liste des sessions
  */
-public class SessionVM_Liste {
+public class SessionLigne {
 
 	/** Identifiant de la session */
 	private String nomSession;
@@ -45,7 +47,7 @@ public class SessionVM_Liste {
 	private Float margeBrute_HT;
 
 	/** Pourcentage de marge brute de la session  */
-	private Integer pourcMargeBrute;
+	private Float pourcMargeBrute;
 
 	/**
 	 * @param nomSession
@@ -62,9 +64,9 @@ public class SessionVM_Liste {
 	 * @param margeBrute_HT
 	 * @param pourcMargeBrute
 	 */
-	public SessionVM_Liste(String nomSession, String nomCentre, String nomCertification, String nomSalleFormation,
+	public SessionLigne(String nomSession, String nomCentre, String nomCertification, String nomSalleFormation,
 			Integer nbrJoursFormation, Integer nbrStagiairesFormation, String nomSociete, LocalDate dateDebutSession,
-			LocalDate dateFinSession, Float totCout_HT, Float tot_CA_HT, Float margeBrute_HT, Integer pourcMargeBrute) {
+			LocalDate dateFinSession, Float totCout_HT, Float tot_CA_HT, Float margeBrute_HT, Float pourcMargeBrute) {
 		super();
 		this.nomSession = nomSession;
 		this.nomCentre = nomCentre;
@@ -80,7 +82,27 @@ public class SessionVM_Liste {
 		this.margeBrute_HT = margeBrute_HT;
 		this.pourcMargeBrute = pourcMargeBrute;
 	}
-
+	/**
+	* @param pourcMargeBrute
+	*/
+	public SessionLigne( Session session) {
+		super();
+		this.nomSession 						= session.getNom();
+		this.nomCentre 							= session.getCentre().getNom();
+		this.nomCertification 					= session.getFormation().getNomCertification();
+		this.nomSalleFormation 					= session.getCalcSalleFormation();
+		this.nbrJoursFormation 					= session.getFormation().getDuree();
+		this.nbrStagiairesFormation 			= session.getCalcNbrStagiairesFormation();
+		this.nomSociete 						= session.getCalcNomSociete()	;	
+		this.dateDebutSession 					= session.getDateDebut();
+		this.dateFinSession 					= session.getDateFin();
+		this.totCout_HT 						= session.getCalcCoutTotalHT();
+		this.tot_CA_HT 							= session.getCalcChiffreAffaireTotalHT();
+		this.margeBrute_HT 						= session.getCalcMargeBruteHT();
+		this.pourcMargeBrute 					= session.getCalcPourMargeBrute();
+	}
+	
+		
 	/** Getter
 	 * @return the nomSession
 	 */
@@ -252,14 +274,14 @@ public class SessionVM_Liste {
 	/** Getter
 	 * @return the pourcMargeBrute
 	 */
-	public Integer getPourcMargeBrute() {
+	public Float getPourcMargeBrute() {
 		return pourcMargeBrute;
 	}
 
 	/** Setter
 	 * @param pourcMargeBrute the pourcMargeBrute to set
 	 */
-	public void setPourcMargeBrute(Integer pourcMargeBrute) {
+	public void setPourcMargeBrute(Float pourcMargeBrute) {
 		this.pourcMargeBrute = pourcMargeBrute;
 	}
 
