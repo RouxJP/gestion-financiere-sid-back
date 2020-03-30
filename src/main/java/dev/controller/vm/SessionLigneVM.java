@@ -7,7 +7,7 @@ import dev.domain.Session;
 /**
  * Structure modèlisant une session servant à communiquer avec la WEB API : liste des sessions
  */
-public class SessionLigne {
+public class SessionLigneVM {
 
 	/** Identifiant de la session */
 	private String nomSession;
@@ -64,7 +64,7 @@ public class SessionLigne {
 	 * @param margeBrute_HT
 	 * @param pourcMargeBrute
 	 */
-	public SessionLigne(String nomSession, String nomCentre, String nomCertification, String nomSalleFormation,
+	public SessionLigneVM(String nomSession, String nomCentre, String nomCertification, String nomSalleFormation,
 			Integer nbrJoursFormation, Integer nbrStagiairesFormation, String nomSociete, LocalDate dateDebutSession,
 			LocalDate dateFinSession, Float totCout_HT, Float tot_CA_HT, Float margeBrute_HT, Float pourcMargeBrute) {
 		super();
@@ -85,7 +85,7 @@ public class SessionLigne {
 	/**
 	* @param pourcMargeBrute
 	*/
-	public SessionLigne( Session session) {
+	public SessionLigneVM( Session session) {
 		super();
 		this.nomSession 						= session.getNom();
 		this.nomCentre 							= session.getCentre().getNom();

@@ -1,25 +1,19 @@
 package dev.controller;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.controller.vm.SessionLigne;
+import dev.controller.vm.SessionLigneVM;
 import dev.controller.vm.SessionVM;
 import dev.domain.Session;
-import dev.exception.ElementNotFoundException;
-//import dev.exception.BadRequestException;
-//import dev.exception.ElementNotFoundException;
 import dev.repository.SessionRepo;
 
 @RestController
@@ -35,23 +29,6 @@ public class SessionController {
 		this.sessionRepo = sessionRepo;
 	}
 
-	/**
-	 * Renvoie un Session spécifique à partir de son id
-	 * 
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping(method = RequestMethod.GET, path = "Session", params = "id")
-	public ResponseEntity<SessionVM> getFromId(Long id) {
-		Optional<Session> sessionOpt = this.sessionRepo.findById(id);
-		if (!sessionOpt.isPresent()) {
-			String messageErreur = "Session d'id " + id + " introuvable..";
-			LOG.error(messageErreur);
-			throw new ElementNotFoundException(messageErreur);
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(new SessionVM(sessionOpt.get()));
-	}
-	
 	/** 
 	 * Retourne la liste de tous les Sessions 
 	 * 
@@ -67,13 +44,17 @@ public class SessionController {
 	}
 
 	/** Rechercher la liste des sessions filtrées par : 
-	*    - libellé : établissement / formation / salle / certification / entreprise
+	*    - libellé : établissement / formation / certification 
+	*                salle        / entreprise
 	*    - période : date de début, date de fin
-	* Chaque filtre est optionnel et pour les libellés on peut saisir un sous libelle
-	* @return
+	*    
+	* Chaque filtre est optionnel.
+	* Pour les libellés on peut saisir un sous libelle
+	* 
+	* @return List<SessionLigne> : liste des lignes session à afficher
 	*/
 	@RequestMapping(method = RequestMethod.GET, path = "SessionsFiltres") 
-	public List<SessionLigne> getSessionFiltreParMatriculeNom( 
+	public List<SessionLigneVM> getSessionFiltreParMatriculeNom( 
 			@RequestParam("etablissement") 		String etablissement, 
             @RequestParam("formation") 			String formation,
             @RequestParam("certification") 		String certif,
@@ -81,15 +62,21 @@ public class SessionController {
             @RequestParam("entreprise") 		String entreprise,
             @RequestParam("dateDebutSession") 	String dateDebut,
 			@RequestParam("dateFinSession") 	String dateFin) {
-		LOG.info( "*** Filtrer les Sessions par " 
-			        + "établissement / formation / certif / salle / entreprise / dateDebut / dateFin  : " 
-		            + etablissement + '/' + formation + '/' + certif + '/' + salle + '/'+ entreprise + '/'+ dateDebut + '/' + dateFin  );
 		
+		LOG.info( "*** Filtrer les Sessions par : " );
+		LOG.info( "   - établissement / formation / certif ==>" + etablissement + '/' + formation + '/' + certif); 
+		LOG.info( "   - salle     / entreprise             ==>" + salle + '/'+ entreprise );
+		LOG.info( "   - dateDebut / dateFin                ==>" + dateDebut + '/' + dateFin  );
+		
+		/** Récupérer les infos de la BD */
 		List<Session> listeSessionsRepo 	= this.sessionRepo.findByNomStartingWith( formation );
 		for( Session session : listeSessionsRepo) {
-				LOG.info( session.getNom());
+				LOG.info( "*** Nom de session / formation : " 
+							+ session.getNom() + " / " + session.getFormation().getNom());
 		} 
-		return listeSessionsRepo.stream().map(session -> new SessionLigne( session)).collect( Collectors.toList());
+		
+		/** Renvoyer au front les résultats */
+		return listeSessionsRepo.stream().map(session -> new SessionLigneVM( session)).collect( Collectors.toList());
 	}
 
 
