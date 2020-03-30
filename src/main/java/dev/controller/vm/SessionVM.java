@@ -99,7 +99,7 @@ public class SessionVM {
 	/** calculMoyenneParBlocs : boolean */
 	private String calculMoyenneParBlocs;
 
-	
+
     public SessionVM(Long id, Centre centre, Societe societe, String nom, LocalDate dateDebut, LocalDate dateFin,
 			Formation formation, List<CoursPlanifie> cours, List<PeriodeFermeeSession> fermes,
 			List<BilanSession> bilans, Salle salle, LocalDateTime dateMaj, String userMaj, Long idPrevious,

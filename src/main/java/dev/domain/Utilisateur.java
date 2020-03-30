@@ -51,6 +51,11 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	@JoinColumn(name = "ID_VALIDEUR")
 	private Utilisateur valideur;
 
+	/** Session associée */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ID_SESSION")
+	private Session session;
+	
 	/** Pour les formateurs, indique si le formateur est certifié */
 	@Column(name = "CERTIF_DGN", length = 3)
 	private String certifieDgn;
@@ -59,9 +64,9 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	 * Type de profil: administrateur, planificateur, formateur, visiteur ou
 	 * stagiaire
 	 */
-	@Column(nullable = false, length = 30)
+	@Column( name = "DEFAULTROLE", nullable = false, length = 30)
 	@Enumerated(EnumType.STRING)
-	private TypeRole defaultRole;
+	private TypeRoleAppli defaultRole;
 
 	/** Adresse mail */
 	@Column(nullable = false, unique = true, length = 30)
@@ -139,7 +144,8 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	 * Liste des profils de l'utilisateur (exemple: administrateur et formateur)
 	 */
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "ROLE_UTILISATEUR", joinColumns = @JoinColumn(name = "ID_UTILISATEUR", referencedColumnName = "ID"), inverseJoinColumns = @JoinColumn(name = "ID_ROLE", referencedColumnName = "ID"))
+	@JoinTable(name = "ROLE_UTILISATEUR", joinColumns = @JoinColumn(name = "ID_UTILISATEUR", referencedColumnName = "ID"), 
+	inverseJoinColumns = @JoinColumn(name = "ID_ROLE", referencedColumnName = "ID"))
 	private List<RoleCollegue> roles = new ArrayList<>();
 
 	/** Centres sur lesquels l'utilisateur est susceptible d'intervenir */
@@ -546,7 +552,7 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	 * 
 	 * @return the defaultRole
 	 */
-	public TypeRole getDefaultRole() {
+	public TypeRoleAppli getDefaultRole() {
 		return defaultRole;
 	}
 
@@ -555,7 +561,7 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	 * 
 	 * @param defaultRole the defaultRole to set
 	 */
-	public void setDefaultRole(TypeRole defaultRole) {
+	public void setDefaultRole(TypeRoleAppli defaultRole) {
 		this.defaultRole = defaultRole;
 	}
 
@@ -747,6 +753,20 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	 */
 	public void setSupprimable(boolean supprimable) {
 		this.supprimable = supprimable;
+	}
+
+	/** Getter
+	 * @return the session
+	 */
+	public Session getSession() {
+		return session;
+	}
+
+	/** Setter
+	 * @param session the session to set
+	 */
+	public void setSession(Session session) {
+		this.session = session;
 	}
 
 }

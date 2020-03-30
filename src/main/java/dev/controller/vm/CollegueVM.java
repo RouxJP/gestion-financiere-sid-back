@@ -1,7 +1,7 @@
 package dev.controller.vm;
 
 import dev.domain.Collegue;
-import dev.domain.Role;
+import dev.domain.RoleAppli;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ public class CollegueVM {
     private String email;
     private String nom;
     private String prenom;
-    private List<Role> roles = new ArrayList<>();
+    private List<RoleAppli> roles = new ArrayList<>();
 
     public CollegueVM(Collegue col) {
         this.email = col.getEmail();
@@ -48,11 +48,11 @@ public class CollegueVM {
         this.prenom = prenom;
     }
 
-    public List<Role> getRoles() {
+    public List<RoleAppli> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(List<RoleAppli> roles) {
         this.roles = roles;
     }
 }

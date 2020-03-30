@@ -87,6 +87,10 @@ public class CoursPlanifie implements Evenement {
 	@Column(name = "SALLE_DISPO")
 	private boolean salleDispo;
 
+	/** compteVirtuelDispo : boolean */
+	@Column(name = "COMPTE_VIRTUEL_DISPO")
+	private boolean compteVirtuelDispo;
+
 	/** statutValidation : StatutValidation */
 	@Column(name = "STATUT_VALIDATION")
 	@Enumerated(EnumType.STRING)
@@ -95,6 +99,24 @@ public class CoursPlanifie implements Evenement {
 	/** commentaires : String */
 	@Column(name = "COMMENTAIRES")
 	private String commentaires;
+
+	/** lienClasseVirtuelle : String */
+	@Column(name = "LIEN_CLASSE_VIRTUELLE")
+	private String lienClasseVirtuelle;
+
+	/** Getter
+	 * @return the lienClasseVirtuelle
+	 */
+	public String getLienClasseVirtuelle() {
+		return lienClasseVirtuelle;
+	}
+
+	/** Setter
+	 * @param lienClasseVirtuelle the lienClasseVirtuelle to set
+	 */
+	public void setLienClasseVirtuelle(String lienClasseVirtuelle) {
+		this.lienClasseVirtuelle = lienClasseVirtuelle;
+	}
 
 	/** formateursDisponibles : List de Utilisateur */
 	@Transient
@@ -497,6 +519,22 @@ public class CoursPlanifie implements Evenement {
 	public void setModalitePedagogique(ModalitePedagogique modalitePedagogique) {
 		this.modalitePedagogique = modalitePedagogique;
 	}
+
+	
+	/** Getter
+	 * @return the compteVirtuelDispo
+	 */
+	public boolean isCompteVirtuelDispo() {
+		return compteVirtuelDispo;
+	}
+
+	/** Setter
+	 * @param compteVirtuelDispo the compteVirtuelDispo to set
+	 */
+	public void setCompteVirtuelDispo(boolean compteVirtuelDispo) {
+		this.compteVirtuelDispo = compteVirtuelDispo;
+	}
+
 
 	/**
 	 * Classe qui construit des instances de {@link CoursPlanifie}
