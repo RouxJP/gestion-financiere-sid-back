@@ -1,5 +1,6 @@
 package dev.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +12,34 @@ public interface SessionRepo extends JpaRepository<Session, Long> {
 
     Optional<Session> findByNom(String nom);
 
-	List<Session> findByNomStartingWith(String formation);
+	
+	List<Session> findByCentreNom( String etablissement);
+
+
+	List<Session> findByCentreNomAndFormationNom(String etablissement, String formation);
+
+
+	List<Session> findByFormationNomCertificationStartingWith(String certif);
+
+
+	List<Session> findByCentreNomStartingWithAndFormationNomStartingWith(String etablissement, String formation);
+
+
+	List<Session> findByCentreNomStartingWithAndFormationNomStartingWithAndFormationNomCertificationStartingWith(
+			String etablissement, String formation, String certif);
+
+
+	List<Session> findByCentreNomStartingWithAndFormationNomStartingWithAndFormationNomCertificationStartingWithAndSalleNomStartingWith(
+			String etablissement, String formation, String certif, String salle);
+
+
+	List<Session> findByCentreNomStartingWithAndFormationNomStartingWithAndFormationNomCertificationStartingWithAndSalleNomStartingWithAndSocieteNomStartingWith(
+			String etablissement, String formation, String certif, String salle, String entreprise);
+
+
+	List<Session> findByDateDebutBetween(LocalDate ldDateDebut, LocalDate ldDateFin);
+
+
 
     
 }
