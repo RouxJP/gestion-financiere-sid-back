@@ -15,6 +15,9 @@ public class SessionLigneVM {
 	/** Nom du Centre */
 	private String nomCentre;
 
+	/** Nom de la ,formation */
+	private String nomFormation;
+
 	/** Nom de la certification */
 	private String nomCertification;
 
@@ -50,45 +53,13 @@ public class SessionLigneVM {
 	private Float pourcMargeBrute;
 
 	/**
-	 * @param nomSession
-	 * @param nomCentre
-	 * @param nomCertification
-	 * @param nomSalleFormation
-	 * @param nbrJoursFormation
-	 * @param nbrStagiairesFormation
-	 * @param nomSociete
-	 * @param dateDebutSession
-	 * @param dateFinSession
-	 * @param totCout_HT
-	 * @param tot_CA_HT
-	 * @param margeBrute_HT
-	 * @param pourcMargeBrute
-	 */
-	public SessionLigneVM(String nomSession, String nomCentre, String nomCertification, String nomSalleFormation,
-			Integer nbrJoursFormation, Integer nbrStagiairesFormation, String nomSociete, LocalDate dateDebutSession,
-			LocalDate dateFinSession, Float totCout_HT, Float tot_CA_HT, Float margeBrute_HT, Float pourcMargeBrute) {
-		super();
-		this.nomSession = nomSession;
-		this.nomCentre = nomCentre;
-		this.nomCertification = nomCertification;
-		this.nomSalleFormation = nomSalleFormation;
-		this.nbrJoursFormation = nbrJoursFormation;
-		this.nbrStagiairesFormation = nbrStagiairesFormation;
-		this.nomSociete = nomSociete;
-		this.dateDebutSession = dateDebutSession;
-		this.dateFinSession = dateFinSession;
-		this.totCout_HT = totCout_HT;
-		this.tot_CA_HT = tot_CA_HT;
-		this.margeBrute_HT = margeBrute_HT;
-		this.pourcMargeBrute = pourcMargeBrute;
-	}
-	/**
 	* @param pourcMargeBrute
 	*/
 	public SessionLigneVM( Session session) {
 		super();
 		this.nomSession 						= session.getNom();
 		this.nomCentre 							= session.getCentre().getNom();
+		this.nomFormation	 					= session.getFormation().getNom();
 		this.nomCertification 					= session.getFormation().getNomCertification();
 		this.nomSalleFormation 					= session.getCalcSalleFormation();
 		this.nbrJoursFormation 					= session.getFormation().getDuree();
@@ -131,6 +102,18 @@ public class SessionLigneVM {
 		this.nomCentre = nomCentre;
 	}
 
+	/** Getter
+	 * @return the nomFormation
+	 */
+	public String getNomFormation() {
+		return nomFormation;
+	}
+	/** Setter
+	 * @param nomFormation the nomFormation to set
+	 */
+	public void setNomFormation(String nomFormation) {
+		this.nomFormation = nomFormation;
+	}
 	/** Getter
 	 * @return the nomCertification
 	 */

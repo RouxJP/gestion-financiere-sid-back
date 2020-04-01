@@ -1,5 +1,7 @@
 package dev.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,9 +49,13 @@ public class SessionController {
 	*    - libellé : établissement / formation / certification 
 	*                salle        / entreprise
 	*    - période : date de début, date de fin
-	*    
+	* 
+	* Attention :
 	* Chaque filtre est optionnel.
+	* 
 	* Pour les libellés on peut saisir un sous libelle
+	* Pour les dates de début et de fin de session il faut qu'il y ait chevauchement 
+	* avec les dates de début et de fin de session
 	* 
 	* @return List<SessionLigne> : liste des lignes session à afficher
 	*/
@@ -63,13 +69,31 @@ public class SessionController {
             @RequestParam("dateDebutSession") 	String dateDebut,
 			@RequestParam("dateFinSession") 	String dateFin) {
 		
+		LocalDate ldDateDebut 	;
+		LocalDate ldDateFin	    ;
+		
 		LOG.info( "*** Filtrer les Sessions par : " );
 		LOG.info( "   - établissement / formation / certif ==>" + etablissement + '/' + formation + '/' + certif); 
 		LOG.info( "   - salle     / entreprise             ==>" + salle + '/'+ entreprise );
 		LOG.info( "   - dateDebut / dateFin                ==>" + dateDebut + '/' + dateFin  );
-		
+		if( dateDebut.trim().equals("")) {
+			ldDateDebut 	= LocalDate.parse("2000-01-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		}else {
+			ldDateDebut 	= LocalDate.parse(dateDebut, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		}
+		if( dateFin.trim().equals("")) {
+			ldDateFin	 	= LocalDate.parse("2040-01-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		}else {
+			ldDateFin	 	= LocalDate.parse(dateFin, DateTimeFormatter.ofPattern("yyyy-MM-dd"));		
+		}
+								  
 		/** Récupérer les infos de la BD */
-		List<Session> listeSessionsRepo 	= this.sessionRepo.findByNomStartingWith( formation );
+		//List<Session> listeSessionsRepo 	= this.sessionRepo.findByNomStartingWith( formation );
+		List<Session> listeSessionsRepo 	= 
+				this.sessionRepo.findByDateDebutBetween( ldDateDebut, ldDateFin);
+//		List<Session> listeSessionsRepo 	= 
+//				this.sessionRepo.findByCentreNomStartingWithAndFormationNomStartingWithAndFormationNomCertificationStartingWithAndSalleNomStartingWithAndSocieteNomStartingWith( etablissement, formation, certif, salle, entreprise );
+		
 		for( Session session : listeSessionsRepo) {
 				LOG.info( "*** Nom de session / formation : " 
 							+ session.getNom() + " / " + session.getFormation().getNom());

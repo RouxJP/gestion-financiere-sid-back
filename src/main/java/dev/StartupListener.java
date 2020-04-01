@@ -2,6 +2,8 @@ package dev;
 
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -26,6 +28,8 @@ public class StartupListener {
 	private PasswordEncoder passwordEncoder;
 	private CollegueRepo collegueRepo;
 
+	private static final Logger LOG = LoggerFactory.getLogger(dev.StartupListener.class);
+
 	public StartupListener(  	@Value("${app.version}") String appVersion, 
 								VersionRepo 					versionRepo,
 								PasswordEncoder 				passwordEncoder, 
@@ -42,9 +46,9 @@ public class StartupListener {
 
 		if( this.collegueRepo.count() == 0) {
 			/** Creer utilisateurs de l'application SID-GF le première fois*/
-			System.out.println("Création de deux utilisateurs : ");
-			System.out.println(" - Admin ");
-			System.out.println(" - Dev ");
+			LOG.info("Création de deux utilisateurs : ");
+			LOG.info(" - Admin ");
+			LOG.info(" - Dev ");
 
 			Collegue col1 = new Collegue();
 			col1.setNom("Admin");
@@ -63,6 +67,9 @@ public class StartupListener {
 			col2.setRoles(Arrays.asList(new RoleCollegue(col2, RoleAppli.ROLE_UTILISATEUR)));
 			this.collegueRepo.save(col2);
 			
+		}else {
+			LOG.info("Démarrage effectué ... ");
+					
 		}
 		
 	}
