@@ -12,13 +12,9 @@ public interface SessionRepo extends JpaRepository<Session, Long> {
 
     Optional<Session> findByNom(String nom);
 
+	List<Session> findByCentreNomStartingWith(String etablissement);
+
 	
-	List<Session> findByCentreNom( String etablissement);
-
-
-	List<Session> findByCentreNomAndFormationNom(String etablissement, String formation);
-
-
 	List<Session> findByFormationNomCertificationStartingWith(String certif);
 
 
@@ -39,6 +35,12 @@ public interface SessionRepo extends JpaRepository<Session, Long> {
 
 	List<Session> findByDateDebutBetween(LocalDate ldDateDebut, LocalDate ldDateFin);
 
+
+	List<Session> findByCentreNomStartingWithAndFormationNomStartingWithAndFormationNomCertificationStartingWithAndSalleNomStartingWithAndSocieteNomStartingWithAndDateDebutBetween(
+			String etablissement, String formation, String certif, String salle, String entreprise,
+			LocalDate ldDateDebut, LocalDate ldDateFin);
+
+	
 
 
     
