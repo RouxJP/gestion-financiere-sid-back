@@ -75,7 +75,6 @@ public class SessionController {
 		LOG.info( "*** Filtrer les Sessions par : " );
 		LOG.info( "   - établissement / formation / certif ==>" + etablissement + '/' + formation + '/' + certif); 
 		LOG.info( "   - salle     / entreprise             ==>" + salle + '/'+ entreprise );
-		LOG.info( "   - dateDebut / dateFin                ==>" + dateDebut + '/' + dateFin  );
 		if( dateDebut.trim().equals("")) {
 			ldDateDebut 	= LocalDate.parse("2000-01-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		}else {
@@ -86,13 +85,16 @@ public class SessionController {
 		}else {
 			ldDateFin	 	= LocalDate.parse(dateFin, DateTimeFormatter.ofPattern("yyyy-MM-dd"));		
 		}
+		LOG.info( "   - dateDebut / dateFin                ==>" + ldDateDebut + '/' + ldDateFin  );
+		
 								  
 		/** Récupérer les infos de la BD */
-		//List<Session> listeSessionsRepo 	= this.sessionRepo.findByNomStartingWith( formation );
-		List<Session> listeSessionsRepo 	= 
-				this.sessionRepo.findByDateDebutBetween( ldDateDebut, ldDateFin);
-//		List<Session> listeSessionsRepo 	= 
-//				this.sessionRepo.findByCentreNomStartingWithAndFormationNomStartingWithAndFormationNomCertificationStartingWithAndSalleNomStartingWithAndSocieteNomStartingWith( etablissement, formation, certif, salle, entreprise );
+// OK		List<Session> listeSessionsRepo 	= this.sessionRepo.findByCentreNomStartingWith( etablissement );
+// OK		List<Session> listeSessionsRepo 	= this.sessionRepo.findByDateDebutBetween( ldDateDebut, ldDateFin);
+// OK		List<Session> listeSessionsRepo 	= this.sessionRepo.findByCentreNomStartingWithAndFormationNomStartingWith( etablissement, formation);
+// OK		List<Session> listeSessionsRepo 	= this.sessionRepo.findByCentreNomStartingWithAndFormationNomStartingWithAndFormationNomCertificationStartingWith( etablissement, formation, certif );
+// OK		List<Session> listeSessionsRepo 	= this.sessionRepo.findByCentreNomStartingWithAndFormationNomStartingWithAndFormationNomCertificationStartingWithAndSalleNomStartingWithAndSocieteNomStartingWith( etablissement, formation, certif, salle, entreprise );
+		List<Session> listeSessionsRepo 		= this.sessionRepo.findByCentreNomStartingWithAndFormationNomStartingWithAndFormationNomCertificationStartingWithAndSalleNomStartingWithAndSocieteNomStartingWithAndDateDebutBetween( etablissement, formation, certif, salle, entreprise, ldDateDebut, ldDateFin);
 		
 		for( Session session : listeSessionsRepo) {
 				LOG.info( "*** Nom de session / formation : " 
