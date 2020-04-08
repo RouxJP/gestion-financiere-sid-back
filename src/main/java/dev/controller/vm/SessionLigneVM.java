@@ -52,6 +52,9 @@ public class SessionLigneVM {
 	/** Pourcentage de marge brute de la session  */
 	private Float pourcMargeBrute;
 
+	/** Valeur de l'attribut class de la ligne de session */
+	private String valeurAttributClasseLigne;
+	
 	/**
 	* @param pourcMargeBrute
 	*/
@@ -71,6 +74,7 @@ public class SessionLigneVM {
 		this.tot_CA_HT 							= session.getCalcChiffreAffaireTotalHT();
 		this.margeBrute_HT 						= session.getCalcMargeBruteHT();
 		this.pourcMargeBrute 					= session.getCalcPourMargeBrute();
+		this.valeurAttributClasseLigne			= "";
 	}
 	
 		
@@ -266,6 +270,22 @@ public class SessionLigneVM {
 	 */
 	public void setPourcMargeBrute(Float pourcMargeBrute) {
 		this.pourcMargeBrute = pourcMargeBrute;
+	}
+
+
+	/** Getter
+	 * @return the valeurAttributClasseLigne
+	 */
+	public String getValeurAttributClasseLigne() {
+		return valeurAttributClasseLigne;
+	}
+
+
+	/** Setter
+	 * @param valeurAttributClasseLigne the valeurAttributClasseLigne to set
+	 */
+	public void setValeurAttributClasseLigne(String valeurAttributClasseLigne) {
+		this.valeurAttributClasseLigne = valeurAttributClasseLigne;
 	}
 
 

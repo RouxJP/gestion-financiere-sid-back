@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.controller.vm.SessionLigneVM;
-import dev.controller.vm.SessionVM;
 import dev.domain.Session;
 import dev.repository.SessionRepo;
 
@@ -31,19 +30,6 @@ public class SessionController {
 		this.sessionRepo = sessionRepo;
 	}
 
-	/** 
-	 * Retourne la liste de tous les Sessions 
-	 * 
-	 * @param 
-	 * @return
-	 */	 
-	@RequestMapping(method = RequestMethod.GET, path = "Sessions")
-	public List<SessionVM> getSessions() {
-		LOG.info( "*** Recuperer tous les Sessions ***");
-		List<Session> listeSessions = this.sessionRepo.findAll();
-		LOG.info( listeSessions.get(0).toString());
-		return listeSessions.stream().map(col -> new SessionVM(col)).collect(Collectors.toList());
-	}
 
 	/** Rechercher la liste des sessions filtrées par : 
 	*    - libellé : établissement / formation / certification 
@@ -60,7 +46,7 @@ public class SessionController {
 	* @return List<SessionLigne> : liste des lignes session à afficher
 	*/
 	@RequestMapping(method = RequestMethod.GET, path = "SessionsFiltres") 
-	public List<SessionLigneVM> getSessionFiltreParMatriculeNom( 
+	public List<SessionLigneVM> getSessionFiltreParCriteres( 
 			@RequestParam("etablissement") 		String etablissement, 
             @RequestParam("formation") 			String formation,
             @RequestParam("certification") 		String certif,
@@ -96,13 +82,24 @@ public class SessionController {
 // OK		List<Session> listeSessionsRepo 	= this.sessionRepo.findByCentreNomStartingWithAndFormationNomStartingWithAndFormationNomCertificationStartingWithAndSalleNomStartingWithAndSocieteNomStartingWith( etablissement, formation, certif, salle, entreprise );
 		List<Session> listeSessionsRepo 		= this.sessionRepo.findByCentreNomStartingWithAndFormationNomStartingWithAndFormationNomCertificationStartingWithAndSalleNomStartingWithAndSocieteNomStartingWithAndDateDebutBetween( etablissement, formation, certif, salle, entreprise, ldDateDebut, ldDateFin);
 		
-		for( Session session : listeSessionsRepo) {
-				LOG.info( "*** Nom de session / formation : " 
-							+ session.getNom() + " / " + session.getFormation().getNom());
+		/** Modifier le contenu de la liste */
+		List<SessionLigneVM> listeSessionVM = listeSessionsRepo.stream().map(session -> new SessionLigneVM( session)).collect( Collectors.toList());
+		int indice = 0;
+		for( SessionLigneVM sessionLigneVM : listeSessionVM) {
+			LOG.info( "*** Nom de session / formation : " 
+						+ sessionLigneVM.getNomSession() + " / " + sessionLigneVM.getNomFormation());
+			if( indice % 2 == 0) {
+				/** Ligne de session affichée en bleu */
+				sessionLigneVM.setValeurAttributClasseLigne("divider");
+			}else {
+				/** Ligne de session affichée en blanc */
+				sessionLigneVM.setValeurAttributClasseLigne("");
+			}
+			indice++;
 		} 
 		
 		/** Renvoyer au front les résultats */
-		return listeSessionsRepo.stream().map(session -> new SessionLigneVM( session)).collect( Collectors.toList());
+		return listeSessionVM ;
 	}
 
 
