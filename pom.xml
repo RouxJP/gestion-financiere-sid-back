@@ -155,13 +155,6 @@
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
-			<properties>
-				<jdbc.driver>org.postgresql.Driver</jdbc.driver>
-				<jdbc.url>jdbc:postgres://ec2-46-137-84-173.eu-west-1.compute.amazonaws.com:5432/d9k3cp1vpmfv4b</jdbc.url>
-				<jdbc.user>zuvyynfwqhdmnk</jdbc.user>
-				<jdbc.pass>3c2f76d9e32d1e25c10e8e3b9a5f7acfed5104b953fd38bea2ee74a51ce3f481</jdbc.pass>
-				<jpa.hibernate.ddl>create-drop</jpa.hibernate.ddl>
-			</properties>
 			<dependencies>
 				<dependency>
 					<groupId>org.postgresql</groupId>
