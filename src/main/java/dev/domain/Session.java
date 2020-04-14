@@ -31,6 +31,8 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import dev.domain.notation.BilanSession;
 import dev.domain.utils.DateUtils;
@@ -49,6 +51,9 @@ import dev.domain.utils.DateUtils;
 @DiscriminatorValue("VERSION")
 public class Session implements Evenement, Cloneable {
 
+	public static final String MULTI_ENTREPRISE = "INTER";
+	private static final Logger LOG = LoggerFactory.getLogger(dev.domain.Session.class);
+	
 	/** identifiant */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -216,6 +221,9 @@ public class Session implements Evenement, Cloneable {
 		this.dateDebut = dateDebut;
 		this.dateFin = dateFin;
 		this.formation = new Formation(idFormation, nomCertification);
+		
+		/** Calculs financiers*/
+		calculerNomSociete();
 	}
 
 	/**
@@ -845,40 +853,12 @@ public class Session implements Evenement, Cloneable {
 	public String getCalcSalleFormation() {
 		return calcSalleFormation;
 	}
-	
-	/** Getter
-	 * @return the calcNbrStagiairesFormation
-	 */
-	public Integer getCalcNbrStagiairesFormation() {
-		return calcNbrStagiairesFormation;
-	}
 
-	/** Getter
-	 * @return the calcCoutTotalHT
+	/** Setter
+	 * @param calcSalleFormation the calcSalleFormation to set
 	 */
-	public Float getCalcCoutTotalHT() {
-		return calcCoutTotalHT;
-	}
-
-	/** Getter
-	 * @return the calcChiffreAffaireTotalHT
-	 */
-	public Float getCalcChiffreAffaireTotalHT() {
-		return calcChiffreAffaireTotalHT;
-	}
-
-	/** Getter
-	 * @return the calcMargeBruteHT
-	 */
-	public Float getCalcMargeBruteHT() {
-		return calcMargeBruteHT;
-	}
-
-	/** Getter
-	 * @return the calcPourMargeBrute
-	 */
-	public Float getCalcPourMargeBrute() {
-		return calcPourMargeBrute;
+	public void setCalcSalleFormation(String calcSalleFormation) {
+		this.calcSalleFormation = calcSalleFormation;
 	}
 
 	/** Getter
@@ -888,8 +868,83 @@ public class Session implements Evenement, Cloneable {
 		return calcNomSociete;
 	}
 
+	/** Setter
+	 * @param calcNomSociete the calcNomSociete to set
+	 */
+	public void setCalcNomSociete(String calcNomSociete) {
+		this.calcNomSociete = calcNomSociete;
+	}
 
-	
+	/** Getter
+	 * @return the calcNbrStagiairesFormation
+	 */
+	public Integer getCalcNbrStagiairesFormation() {
+		return calcNbrStagiairesFormation;
+	}
+
+	/** Setter
+	 * @param calcNbrStagiairesFormation the calcNbrStagiairesFormation to set
+	 */
+	public void setCalcNbrStagiairesFormation(Integer calcNbrStagiairesFormation) {
+		this.calcNbrStagiairesFormation = calcNbrStagiairesFormation;
+	}
+
+	/** Getter
+	 * @return the calcCoutTotalHT
+	 */
+	public Float getCalcCoutTotalHT() {
+		return calcCoutTotalHT;
+	}
+
+	/** Setter
+	 * @param calcCoutTotalHT the calcCoutTotalHT to set
+	 */
+	public void setCalcCoutTotalHT(Float calcCoutTotalHT) {
+		this.calcCoutTotalHT = calcCoutTotalHT;
+	}
+
+	/** Getter
+	 * @return the calcChiffreAffaireTotalHT
+	 */
+	public Float getCalcChiffreAffaireTotalHT() {
+		return calcChiffreAffaireTotalHT;
+	}
+
+	/** Setter
+	 * @param calcChiffreAffaireTotalHT the calcChiffreAffaireTotalHT to set
+	 */
+	public void setCalcChiffreAffaireTotalHT(Float calcChiffreAffaireTotalHT) {
+		this.calcChiffreAffaireTotalHT = calcChiffreAffaireTotalHT;
+	}
+
+	/** Getter
+	 * @return the calcMargeBruteHT
+	 */
+	public Float getCalcMargeBruteHT() {
+		return calcMargeBruteHT;
+	}
+
+	/** Setter
+	 * @param calcMargeBruteHT the calcMargeBruteHT to set
+	 */
+	public void setCalcMargeBruteHT(Float calcMargeBruteHT) {
+		this.calcMargeBruteHT = calcMargeBruteHT;
+	}
+
+	/** Getter
+	 * @return the calcPourMargeBrute
+	 */
+	public Float getCalcPourMargeBrute() {
+		return calcPourMargeBrute;
+	}
+
+	/** Setter
+	 * @param calcPourMargeBrute the calcPourMargeBrute to set
+	 */
+	public void setCalcPourMargeBrute(Float calcPourMargeBrute) {
+		this.calcPourMargeBrute = calcPourMargeBrute;
+	}
+
 	/** Début : Zone de Calculs financiers */
 	/***************************************/
 	/**
@@ -898,8 +953,8 @@ public class Session implements Evenement, Cloneable {
 	 * 
 	 * @return String : Nom de la salle de formation
 	 */
-	public String setCalcSalleFormation() {
-		// TODO Auto-generated method stub
+	public String calculerSalleFormation() {
+		// TODO 
 		return null;
 	}
 
@@ -908,8 +963,8 @@ public class Session implements Evenement, Cloneable {
 	 * au prorata du temps passé
 	 * @return Integer : Nombre de stagiaire de la formation
 	 */
-	public Integer setCalcNbrStagiairesFormation() {
-		// TODO Auto-generated method stub
+	public Integer calculerNbrStagiairesFormation() {
+		// TODO 
 		return null;
 	}
 
@@ -917,8 +972,8 @@ public class Session implements Evenement, Cloneable {
 	 * 
 	 * @return
 	 */
-	public Float setCalcCoutTotalHT() {
-		// TODO Auto-generated method stub
+	public Float calculerCoutTotalHT() {
+		// TODO 
 		return null;
 	}
 
@@ -926,8 +981,8 @@ public class Session implements Evenement, Cloneable {
 	 * 
 	 * @return
 	 */
-	public Float setCalcChiffreAffaireTotalHT() {
-		// TODO Auto-generated method stub
+	public Float calculerChiffreAffaireTotalHT() {
+		// TODO 
 		return null;
 	}
 
@@ -935,8 +990,8 @@ public class Session implements Evenement, Cloneable {
 	 * 
 	 * @return
 	 */
-	public Float setCalcMargeBruteHT() {
-		// TODO Auto-generated method stub
+	public Float calculerMargeBruteHT() {
+		// TODO 
 		return null;
 	}
 
@@ -944,8 +999,8 @@ public class Session implements Evenement, Cloneable {
 	 * 
 	 * @return
 	 */
-	public Float setCalcPourMargeBrute() {
-		// TODO Auto-generated method stub
+	public Float calculerPourMargeBrute() {
+		// TODO 
 		return null;
 	}
 
@@ -954,8 +1009,23 @@ public class Session implements Evenement, Cloneable {
 	 * On met le nom de l'entreprise des stiagiares si il y en a qu'une, sinon INTER
 	 * @param calcNomSociete the calcNomSociete to set
 	 */
-	public void setCalcNomSociete(String calcNomSociete) {
-		this.calcNomSociete = calcNomSociete;
+	public String calculerNomSociete() {
+		
+		String nomSociete = null;
+		for( Utilisateur stagiaire : getStagiaires()) {
+			if( !stagiaire.getSociete().getNom().equals( nomSociete)) {
+				if( nomSociete == null) {
+					// Première entreprise récupérée
+					nomSociete = stagiaire.getSociete().getNom();
+				}else {
+					nomSociete = MULTI_ENTREPRISE ;
+				}
+			}
+			// LOG.info( "Entreprise : " + nomSociete);
+			
+		}
+		
+		return  nomSociete;
 	}
 
 	/** Fin : Zone de Calculs financiers */

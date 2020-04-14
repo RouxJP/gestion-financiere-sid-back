@@ -64,17 +64,21 @@ public class SessionLigneVM {
 		this.nomCentre 							= session.getCentre().getNom();
 		this.nomFormation	 					= session.getFormation().getNom();
 		this.nomCertification 					= session.getFormation().getNomCertification();
-		this.nomSalleFormation 					= session.getCalcSalleFormation();
 		this.nbrJoursFormation 					= session.getFormation().getDuree();
-		this.nbrStagiairesFormation 			= session.getCalcNbrStagiairesFormation();
-		this.nomSociete 						= session.getCalcNomSociete()	;	
 		this.dateDebutSession 					= session.getDateDebut();
 		this.dateFinSession 					= session.getDateFin();
+		this.valeurAttributClasseLigne			= "";
+		
+		/** Calculs financiers */
+		this.nomSociete 						= session.calculerNomSociete()	;	
+
+		/** TODO */
+		this.nomSalleFormation 					= session.getCalcSalleFormation();
+		this.nbrStagiairesFormation 			= session.getCalcNbrStagiairesFormation();
 		this.totCout_HT 						= session.getCalcCoutTotalHT();
 		this.tot_CA_HT 							= session.getCalcChiffreAffaireTotalHT();
 		this.margeBrute_HT 						= session.getCalcMargeBruteHT();
 		this.pourcMargeBrute 					= session.getCalcPourMargeBrute();
-		this.valeurAttributClasseLigne			= "";
 	}
 	
 		
