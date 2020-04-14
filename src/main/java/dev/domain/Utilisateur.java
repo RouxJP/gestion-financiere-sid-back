@@ -66,7 +66,7 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	 */
 	@Column( name = "DEFAULTROLE", nullable = false, length = 30)
 	@Enumerated(EnumType.STRING)
-	private TypeRoleAppli defaultRole;
+	private TypeRole defaultRole;
 
 	/** Adresse mail */
 	@Column(nullable = false, unique = true, length = 30)
@@ -552,7 +552,7 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	 * 
 	 * @return the defaultRole
 	 */
-	public TypeRoleAppli getDefaultRole() {
+	public TypeRole getDefaultRole() {
 		return defaultRole;
 	}
 
@@ -561,7 +561,7 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	 * 
 	 * @param defaultRole the defaultRole to set
 	 */
-	public void setDefaultRole(TypeRoleAppli defaultRole) {
+	public void setDefaultRole(TypeRole defaultRole) {
 		this.defaultRole = defaultRole;
 	}
 
