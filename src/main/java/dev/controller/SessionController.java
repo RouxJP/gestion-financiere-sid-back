@@ -86,8 +86,6 @@ public class SessionController {
 		List<SessionLigneVM> listeSessionVM = listeSessionsRepo.stream().map(session -> new SessionLigneVM( session)).collect( Collectors.toList());
 		int indice = 0;
 		for( SessionLigneVM sessionLigneVM : listeSessionVM) {
-			LOG.info( "*** Nom de session / formation : " 
-						+ sessionLigneVM.getNomSession() + " / " + sessionLigneVM.getNomFormation());
 			if( indice % 2 == 0) {
 				/** Ligne de session affichée en bleu */
 				sessionLigneVM.setValeurAttributClasseLigne("divider");
@@ -96,6 +94,8 @@ public class SessionController {
 				sessionLigneVM.setValeurAttributClasseLigne("");
 			}
 			indice++;
+			LOG.info( "*** Nom de session / salle : " 
+					+ sessionLigneVM.getNomSession() + " / " + sessionLigneVM.getNomSalleFormation());
 		} 
 		
 		/** Renvoyer au front les résultats */
