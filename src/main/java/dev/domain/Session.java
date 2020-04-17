@@ -991,15 +991,6 @@ public class Session implements Evenement, Cloneable {
 	 * 
 	 * @return
 	 */
-	public Float calculerCoutTotalHT() {
-		// TODO
-		return null;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
 	public Float calculerChiffreAffaireTotalHT() {
 		// TODO
 		return null;
@@ -1096,6 +1087,20 @@ public class Session implements Evenement, Cloneable {
 				+ nomSession);
 		return salleFormationLaPlusUtilisee.getNomSalle();
 	}
+	
+	/**
+	 * Calcule le coût total HT pour une session de formation.
+	 * C'est la somme des montants hors taxe des lignes de commandes 
+	 * qui sont rattachées à la session
+	 * @return
+	 */
+	public Float calculerCoutTotalHT() {
+		Float totCoutHTSession = 0.0F;
+		
+		return null;
+	}
+
+
 
 	/** Fin : Zone de Calculs financiers */
 	/***************************************/

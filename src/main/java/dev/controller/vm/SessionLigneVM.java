@@ -72,10 +72,10 @@ public class SessionLigneVM {
 		/** Calculs financiers */
 		this.nomSociete 						= session.calculerNomSociete()	;	
 		this.nomSalleFormation					= session.calculerSalleFormation( session.getNom()) ;
+		this.totCout_HT 						= session.getCalcCoutTotalHT();
 
 		/** TODO */
 		this.nbrStagiairesFormation 			= session.getCalcNbrStagiairesFormation();
-		this.totCout_HT 						= session.getCalcCoutTotalHT();
 		this.tot_CA_HT 							= session.getCalcChiffreAffaireTotalHT();
 		this.margeBrute_HT 						= session.getCalcMargeBruteHT();
 		this.pourcMargeBrute 					= session.getCalcPourMargeBrute();
