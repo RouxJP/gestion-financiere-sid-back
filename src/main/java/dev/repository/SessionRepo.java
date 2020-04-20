@@ -43,5 +43,9 @@ public interface SessionRepo extends JpaRepository<Session, Long> {
 				String etablissement, String formation, String certif, String salle, String entreprise,
 				LocalDate ldDateDebut, LocalDate ldDateFin);
 
+		List<Session> findByCentreNomStartingWithAndFormationNomStartingWithAndFormationNomCertificationStartingWithAndSalleNomStartingWithAndSocieteNomStartingWithAndDateDebutBetweenOrDateFinBetween(
+				String etablissement, String formation, String certif, String salle, String entreprise,
+				LocalDate ldDateDebut, LocalDate ldDateFin, LocalDate ldDateDebut2, LocalDate ldDateFin2);
+
     
 }
