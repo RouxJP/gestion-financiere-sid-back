@@ -135,14 +135,18 @@ public class Session implements Evenement, Cloneable {
 	@Column(name = "STATUT_PREPARATION")
 	private StatutPreparation statutPreparation;
 
-	/** stagiaires : List de Utilisateur */
+	/** Liste des stagiaires */
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "SESSION_STAGIAIRE", joinColumns = @JoinColumn(name = "ID_SES", referencedColumnName = "ID"), inverseJoinColumns = @JoinColumn(name = "ID_STAG", referencedColumnName = "ID"))
+	@JoinTable(	name = "SESSION_STAGIAIRE", 
+				joinColumns = @JoinColumn(name = "ID_SES", referencedColumnName = "ID"), 
+				inverseJoinColumns = @JoinColumn(name = "ID_STAG", referencedColumnName = "ID"))
 	private Set<Utilisateur> stagiaires = new HashSet<>();
 
 	/** planificateurs : List de Utilisateur */
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "SESSION_PLANIFICATEUR", joinColumns = @JoinColumn(name = "ID_SES", referencedColumnName = "ID"), inverseJoinColumns = @JoinColumn(name = "ID_USER", referencedColumnName = "ID"))
+	@JoinTable(	name = "SESSION_PLANIFICATEUR", 
+				joinColumns = @JoinColumn(name = "ID_SES", referencedColumnName = "ID"), 
+				inverseJoinColumns = @JoinColumn(name = "ID_USER", referencedColumnName = "ID"))
 	private Set<Utilisateur> planificateurs = new HashSet<>();
 
 	/** staffé sans : boolean */
