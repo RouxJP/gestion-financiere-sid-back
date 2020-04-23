@@ -13,12 +13,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import dev.domain.finance.AbsenceStagiaire;
 import dev.domain.finance.TypeFinancementChoisi;
 
 /**
- * Représente un couple session/stagiaire pour lequel on a :
- *  - un id de financement choisi
- *  - un id d'absences du stagiaire pour ce type de financement
+ * Représente un couple session/stagiaire pour lequel on a accés à :
+ *  - une liste de  type de financements choisis
+ *  - une liste d'absences du stagiaire 
  *  
  * @author DIGINAMIC
  *
@@ -28,15 +29,7 @@ import dev.domain.finance.TypeFinancementChoisi;
 @Cacheable
 public class SessionStagiaire implements Serializable {
 
-
-	private static final long serialVersionUID = 1L;
-
-	/** identifiant */ 
-//	@Id
-//	@JoinColumn
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
-//	@Column(name = "ID")
-//	private Long id;
+	private static long serialVersionUID = 1L;
 
 	/** Session */
 	@Id
@@ -51,76 +44,46 @@ public class SessionStagiaire implements Serializable {
 	private Utilisateur stagiaire;
 
 
-	/** Liste des financements choisis pour un stagiaire à une session donnée */
+	/** Liste des types de financements choisis pour un stagiaire à une session donnée */
 	@OneToMany(mappedBy = "sessionStagiaire", fetch = FetchType.LAZY)
 	private List<TypeFinancementChoisi> typesFinChoisis = new ArrayList<>();
 
 
 	/** Liste des absences d'un stagiaire à une session donnée */
-//	@OneToMany(mappedBy = "SESSION_STAGIAIRE", fetch = FetchType.LAZY)
-//	private List<AbsenceStagiaire> absencesStagiaires = new ArrayList<>();
+	@OneToMany(mappedBy = "sessionStagiaire", fetch = FetchType.LAZY)
+	private List<AbsenceStagiaire> absencesStagiaires = new ArrayList<>();
 
-	
-//	/** Getter
-//	 * @return the typesFinChoisis
-//	 */
-//	public List<TypeFinancementChoisi> getTypesFinChoisis() {
-//		return typesFinChoisis;
-//	}
-//
-//	/** Setter
-//	 * @param typesFinChoisis the typesFinChoisis to set
-//	 */
-//	public void setTypesFinChoisis(List<TypeFinancementChoisi> typesFinChoisis) {
-//		this.typesFinChoisis = typesFinChoisis;
-//	}
-
-//	/** Getter
-//	 * @return the absencesStagiaires
-//	 */
-//	public List<AbsenceStagiaire> getAbsencesStagiaires() {
-//		return absencesStagiaires;
-//	}
-//
-//	/** Setter
-//	 * @param absencesStagiaires the absencesStagiaires to set
-//	 */
-//	public void setAbsencesStagiaires(List<AbsenceStagiaire> absencesStagiaires) {
-//		this.absencesStagiaires = absencesStagiaires;
-//	}
-//
 
 	/**
-	 * @param id
 	 * @param session
 	 * @param stagiaire
 	 * @param typesFinChoisis
+	 * @param absencesStagiaires
 	 */
-	public SessionStagiaire(Long id, Session session, Utilisateur stagiaire,
-			List<TypeFinancementChoisi> typesFinChoisis) {
+	public SessionStagiaire(Session session, Utilisateur stagiaire, List<TypeFinancementChoisi> typesFinChoisis,
+			List<AbsenceStagiaire> absencesStagiaires) {
 		super();
-//		this.id = id;
 		this.session = session;
 		this.stagiaire = stagiaire;
 		this.typesFinChoisis = typesFinChoisis;
+		this.absencesStagiaires = absencesStagiaires;
 	}
 
 
+	/** Getter
+	 * @return the serialversionuid
+	 */
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 
-//	/** Getter
-//	 * @return the id
-//	 */
-//	public Long getId() {
-//		return id;
-//	}
-//
-//
-//	/** Setter
-//	 * @param id the id to set
-//	 */
-//	public void setId(Long id) {
-//		this.id = id;
-//	}
+
+	/** Setter
+	 * @param serialversionuid the serialversionuid to set
+	 */
+	public static void setSerialversionuid(long serialversionuid) {
+		serialVersionUID = serialversionuid;
+	}
 
 
 	/** Getter
@@ -169,6 +132,24 @@ public class SessionStagiaire implements Serializable {
 	public void setTypesFinChoisis(List<TypeFinancementChoisi> typesFinChoisis) {
 		this.typesFinChoisis = typesFinChoisis;
 	}
+
+
+	/** Getter
+	 * @return the absencesStagiaires
+	 */
+	public List<AbsenceStagiaire> getAbsencesStagiaires() {
+		return absencesStagiaires;
+	}
+
+
+	/** Setter
+	 * @param absencesStagiaires the absencesStagiaires to set
+	 */
+	public void setAbsencesStagiaires(List<AbsenceStagiaire> absencesStagiaires) {
+		this.absencesStagiaires = absencesStagiaires;
+	}
+
+	
 
 
 

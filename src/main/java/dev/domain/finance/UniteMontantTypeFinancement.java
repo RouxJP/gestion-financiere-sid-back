@@ -5,7 +5,7 @@ package dev.domain.finance;
  * @author acer
  *
  */
-public enum UniteMontantFinancement {
+public enum UniteMontantTypeFinancement {
 
 	MNT_HOR_STAGIAIRE("Montant horaire par stagiaire"),
 	MNT_HOR_GROUPE("Montant horaire par groupe"),
@@ -17,7 +17,7 @@ public enum UniteMontantFinancement {
 	/**
 	 * @param libelle
 	 */
-	private UniteMontantFinancement(String libelle) {
+	private UniteMontantTypeFinancement(String libelle) {
 		this.libelle = libelle;
 	}
 

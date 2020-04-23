@@ -14,9 +14,10 @@ import javax.persistence.Table;
 
 
 /**
- * Représente un type de financement possible à une session donnée pour un stagiaire
- * Quand don choisi un type de financement pour une session/stagiare le contenu 
+ * Représente un type de financement possible pour une session/stagiaire
+ * Quand on choisi un type de financement pour une session/stagiaire le contenu 
  * de cette table pour ce type de financement est recopié dans la table type_financement_choisi 
+ * 
  * @author DIGINAMIC
  *
  */
@@ -40,7 +41,7 @@ public class TypeFinancementPossible {
 	@Column(name = "DATE_FIN")
 	private LocalDate dateFin;
 	
-	@Column(name = "NBR_HEURES")
+	@Column(name = "NBR_HEURE")
 	private Integer nbrHeures;
 	
 	/** Montant HT du financement */
@@ -49,7 +50,7 @@ public class TypeFinancementPossible {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "UNITE")
-	private UniteMontantFinancement uniteMontant;
+	private UniteMontantTypeFinancement uniteMontant;
 
 	/** Taux de TVA appliqué au montant du  financement */
 	@Column(name = "TAUX_TVA")
@@ -66,7 +67,7 @@ public class TypeFinancementPossible {
 	 * @param tauxTVA
 	 */
 	public TypeFinancementPossible(Long id, String libelle, LocalDate dateDebut, LocalDate dateFin, Integer nbrHeures,
-			Float montantHT, UniteMontantFinancement uniteMontant, Float tauxTVA) {
+			Float montantHT, UniteMontantTypeFinancement uniteMontant, Float tauxTVA) {
 		super();
 		this.id = id;
 		this.libelle = libelle;
@@ -165,14 +166,14 @@ public class TypeFinancementPossible {
 	/** Getter
 	 * @return the uniteMontant
 	 */
-	public UniteMontantFinancement getUniteMontant() {
+	public UniteMontantTypeFinancement getUniteMontant() {
 		return uniteMontant;
 	}
 
 	/** Setter
 	 * @param uniteMontant the uniteMontant to set
 	 */
-	public void setUniteMontant(UniteMontantFinancement uniteMontant) {
+	public void setUniteMontant(UniteMontantTypeFinancement uniteMontant) {
 		this.uniteMontant = uniteMontant;
 	}
 

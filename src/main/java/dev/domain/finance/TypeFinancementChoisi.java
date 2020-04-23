@@ -16,9 +16,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import dev.domain.Session;
 import dev.domain.SessionStagiaire;
-import dev.domain.Utilisateur;
 
 /**
  * Représente un type de financement choisi d'une session de formation :
@@ -32,9 +30,10 @@ import dev.domain.Utilisateur;
  *       - horaires par stagiaire
  *       - forfaitaires par stagiaire
  *       -...
- * On peut en déduire le calcul d'un type de financement 
- * Par session-stagiaire on peut choisir un type de financement possible
- * Son contenu sera recopié dans la table FINANCEMENT_CHOISI
+ * On peut en déduire le calcul d'un type de financement par session-stagiaire
+ * 
+ * Un type de financement choisi a un contenu identique au type de financement 
+ * possible à partir duquel on la créé
  * 
  * @author DIGINAMIC
  *
@@ -70,34 +69,27 @@ public class TypeFinancementChoisi {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "UNITE")
-	private UniteMontantFinancement uniteMontant;
+	private UniteMontantTypeFinancement uniteMontant;
 
 	/** Taux de TVA appliqué au montant du  financement */
 	@Column(name = "TAUX_TVA")
 	private Float tauxTVA;
 
-	@Column(name = "ID_SES")
-	private Session session;
-	
-	@Column(name = "ID_STAG")
-	private Utilisateur stagiaire;
-	
 	/** Type de financement possible auquel il a été relié à sa création */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ID_FIN_POSSIBLE")
+	@JoinColumn(name = "ID_TYPE_FIN_POSSIBLE")
 	private TypeFinancementPossible typeFinancementPossible;
 	
 	/** Session/stagiaire */
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns( {
-        @JoinColumn(name = "ID_SES",  referencedColumnName = "ID_SES"),
-        @JoinColumn(name = "ID_STAG", referencedColumnName = "ID_STAG")
+        @JoinColumn(name = "ID_SESSION",  	referencedColumnName = "ID_SES", 	insertable=false, updatable=false),
+        @JoinColumn(name = "ID_STAGIAIRE", 	referencedColumnName = "ID_STAG", 	insertable=false, updatable=false)
     })	
 	private SessionStagiaire sessionStagiaire;
-	
+
 	/**
 	 * @param id
-	 * @param typeFinancementPossible
 	 * @param libelle
 	 * @param dateDebut
 	 * @param dateFin
@@ -105,13 +97,14 @@ public class TypeFinancementChoisi {
 	 * @param montantHT
 	 * @param uniteMontant
 	 * @param tauxTVA
+	 * @param typeFinancementPossible
+	 * @param sessionStagiaire
 	 */
-	public TypeFinancementChoisi(Long id, TypeFinancementPossible typeFinancementPossible, String libelle,
-			LocalDate dateDebut, LocalDate dateFin, int nbrHeure, Float montantHT, UniteMontantFinancement uniteMontant,
-			Float tauxTVA) {
+	public TypeFinancementChoisi(Long id, String libelle, LocalDate dateDebut, LocalDate dateFin, int nbrHeure,
+			Float montantHT, UniteMontantTypeFinancement uniteMontant, Float tauxTVA,
+			TypeFinancementPossible typeFinancementPossible, SessionStagiaire sessionStagiaire) {
 		super();
 		this.id = id;
-		this.typeFinancementPossible = typeFinancementPossible;
 		this.libelle = libelle;
 		this.dateDebut = dateDebut;
 		this.dateFin = dateFin;
@@ -119,6 +112,8 @@ public class TypeFinancementChoisi {
 		this.montantHT = montantHT;
 		this.uniteMontant = uniteMontant;
 		this.tauxTVA = tauxTVA;
+		this.typeFinancementPossible = typeFinancementPossible;
+		this.sessionStagiaire = sessionStagiaire;
 	}
 
 	/** Getter
@@ -133,20 +128,6 @@ public class TypeFinancementChoisi {
 	 */
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	/** Getter
-	 * @return the typeFinancementPossible
-	 */
-	public TypeFinancementPossible getTypeFinancementPossible() {
-		return typeFinancementPossible;
-	}
-
-	/** Setter
-	 * @param typeFinancementPossible the typeFinancementPossible to set
-	 */
-	public void setTypeFinancementPossible(TypeFinancementPossible typeFinancementPossible) {
-		this.typeFinancementPossible = typeFinancementPossible;
 	}
 
 	/** Getter
@@ -222,14 +203,14 @@ public class TypeFinancementChoisi {
 	/** Getter
 	 * @return the uniteMontant
 	 */
-	public UniteMontantFinancement getUniteMontant() {
+	public UniteMontantTypeFinancement getUniteMontant() {
 		return uniteMontant;
 	}
 
 	/** Setter
 	 * @param uniteMontant the uniteMontant to set
 	 */
-	public void setUniteMontant(UniteMontantFinancement uniteMontant) {
+	public void setUniteMontant(UniteMontantTypeFinancement uniteMontant) {
 		this.uniteMontant = uniteMontant;
 	}
 
@@ -247,8 +228,33 @@ public class TypeFinancementChoisi {
 		this.tauxTVA = tauxTVA;
 	}
 
+	/** Getter
+	 * @return the typeFinancementPossible
+	 */
+	public TypeFinancementPossible getTypeFinancementPossible() {
+		return typeFinancementPossible;
+	}
 
+	/** Setter
+	 * @param typeFinancementPossible the typeFinancementPossible to set
+	 */
+	public void setTypeFinancementPossible(TypeFinancementPossible typeFinancementPossible) {
+		this.typeFinancementPossible = typeFinancementPossible;
+	}
 
+	/** Getter
+	 * @return the sessionStagiaire
+	 */
+	public SessionStagiaire getSessionStagiaire() {
+		return sessionStagiaire;
+	}
 
+	/** Setter
+	 * @param sessionStagiaire the sessionStagiaire to set
+	 */
+	public void setSessionStagiaire(SessionStagiaire sessionStagiaire) {
+		this.sessionStagiaire = sessionStagiaire;
+	}
+	
 
 }
