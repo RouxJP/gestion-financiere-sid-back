@@ -167,7 +167,9 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	 * plusieurs sessions
 	 */
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "SESSION_STAGIAIRE", joinColumns = @JoinColumn(name = "ID_STAG", referencedColumnName = "ID"), inverseJoinColumns = @JoinColumn(name = "ID_SES", referencedColumnName = "ID"))
+	@JoinTable(	name = "SESSION_STAGIAIRE", 
+				joinColumns = @JoinColumn(name = "ID_STAG", referencedColumnName = "ID"), 
+				inverseJoinColumns = @JoinColumn(name = "ID_SES", referencedColumnName = "ID"))
 	private List<Session> sessionsStagiaire = new ArrayList<>();
 
 	/**
