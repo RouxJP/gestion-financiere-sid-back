@@ -15,24 +15,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.controller.vm.SessionLigneVM;
 import dev.domain.Session;
-import dev.domain.finance.BonCommande;
-import dev.domain.finance.LigneCommande;
-import dev.repository.BonCommandeRepo;
+import dev.domain.SessionStagiaire;
 import dev.repository.SessionRepo;
+import dev.repository.SessionStagiaireRepo;
 
 @RestController
 @CrossOrigin
 public class SessionController {
 
 	// Ici requêtes d'acces aux tables
-	private SessionRepo sessionRepo;	
-	private BonCommandeRepo bonCommandeRepo;	
+	private SessionRepo 			sessionRepo;	
+	private SessionStagiaireRepo 	sessionStagiaireRepo;	
 
 	private static final Logger LOG = LoggerFactory.getLogger(dev.controller.SessionController.class);
 
-	public SessionController(SessionRepo sessionRepo, BonCommandeRepo bonCommandeRepo) {
-		this.sessionRepo 		= sessionRepo;
-		this.bonCommandeRepo 	= bonCommandeRepo;
+	public SessionController(SessionRepo sessionRepo, SessionStagiaireRepo sessionStagiaireRepo) {
+		this.sessionRepo 			= sessionRepo;
+		this.sessionStagiaireRepo 	= sessionStagiaireRepo;
 	}
 
 
@@ -89,20 +88,23 @@ public class SessionController {
 		
 		/** Intégrer les calculs dans la liste des sessions*/
 		for( Session sessionLigne : listeSessionsRepo) {
-			//** Calculer les couts financiers liés aux lignes de commandes */
-			List<BonCommande> listeBonCommandeRepo 		= this.bonCommandeRepo.findBySession( sessionLigne);
 			Float 	calcCoutTotalHT 			= 0.0f;		
 			Float 	calcChiffreAffaireTotalHT 	= 0.0f;
 			Float 	calcMargeBruteHT 			= 0.0f;
 			Float 	calcPourMargeBrute 			= 0.0f;
-			for( BonCommande listeBonCommande : listeBonCommandeRepo) {
-				for( LigneCommande listeLigneCommande : listeBonCommande.getLignes()) {
-					calcCoutTotalHT += listeLigneCommande.getMontantHT();
-				}
-			}
+			
+			// *** Calculer le coût HT  d'une session */
 			sessionLigne.setCalcCoutTotalHT(calcCoutTotalHT);
 			
-			//** Calculer le CA financiers */
+			//** Calculer le CA HT de la session */
+			List<SessionStagiaire> sessionStagiaires = this.sessionStagiaireRepo.findBySession( sessionLigne) ;
+			for( SessionStagiaire sessionStagiaire : sessionStagiaires ) {
+				calcChiffreAffaireTotalHT += sessionStagiaire.calc_CA_HT_typeFinChoisiStagiaire();
+				LOG.info( "Session-Stagiaire-CA : " + 
+						sessionStagiaire.getSession().getId() + " - " +
+						sessionStagiaire.getStagiaire().getId() + " - " +
+						sessionStagiaire.calc_CA_HT_typeFinChoisiStagiaire());
+			}
 			sessionLigne.setCalcChiffreAffaireTotalHT(calcChiffreAffaireTotalHT);
 			
 			// En déduire la marge brute totale
@@ -135,6 +137,7 @@ public class SessionController {
 		/** Renvoyer au front les résultats */
 		return listeSessionVM ;
 	}
+
 
 
 }

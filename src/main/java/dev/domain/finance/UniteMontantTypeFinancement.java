@@ -7,10 +7,17 @@ package dev.domain.finance;
  */
 public enum UniteMontantTypeFinancement {
 
-	MNT_HOR_STAGIAIRE("Montant horaire par stagiaire"),
-	MNT_HOR_GROUPE("Montant horaire par groupe"),
-	MNT_FOR_SESSION("Montant forfaitaire par session");
-
+	UNITE_HEURE_STAGIAIRE("Heure-Stagiaire"),
+	UNITE_JOUR_STAGIAIRE("Jour-Stagiaire"),
+	UNITE_SEMAINE_STAGIAIRE("Semaine-Stagiaire"),
+	UNITE_MOIS_STAGIAIRE("Mois-Stagiaire"),
+	UNITE_SESSION_STAGIAIRE("Session-stagiaire"),
+	UNITE_HEURE_SESSION("Heure-Session"),
+	UNITE_JOUR_SESSION("Jour-Session"),
+	UNITE_SEMAINE_SESSION("Semaine-Session"),
+	UNITE_MOIS_SESSION("Mois-Session"),
+	UNITE_SESSION("Session-Session");
+	
 	/** libelle : String */
 	private String libelle;
 

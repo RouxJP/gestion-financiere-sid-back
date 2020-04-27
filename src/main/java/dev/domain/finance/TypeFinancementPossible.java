@@ -1,15 +1,19 @@
 package dev.domain.finance;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
@@ -41,12 +45,13 @@ public class TypeFinancementPossible {
 	@Column(name = "DATE_FIN")
 	private LocalDate dateFin;
 	
-	@Column(name = "NBR_HEURE")
-	private Integer nbrHeures;
+	/** Nombre d'unités pour ce type de financement */
+	@Column(name = "NBR_UNITE")
+	private Integer nbrUnites;
 	
-	/** Montant HT du financement */
-	@Column(name = "MONTANT_HT")
-	private Float montantHT;
+	/** Montant unite HT du financement */
+	@Column(name = "MONTANT_UNITE_HT")
+	private Float montantUniteHT;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "UNITE")
@@ -55,28 +60,16 @@ public class TypeFinancementPossible {
 	/** Taux de TVA appliqué au montant du  financement */
 	@Column(name = "TAUX_TVA")
 	private Float tauxTVA;
+	
+	@OneToMany(mappedBy = "typeFinancementPossible", fetch = FetchType.LAZY)
+	private List<TypeFinancementChoisi> financementsChoisis = new ArrayList<>();
 
 	/**
-	 * @param id
-	 * @param libelle
-	 * @param dateDebut
-	 * @param dateFin
-	 * @param nbrHeures
-	 * @param montantHT
-	 * @param uniteMontant
-	 * @param tauxTVA
+	 * 
 	 */
-	public TypeFinancementPossible(Long id, String libelle, LocalDate dateDebut, LocalDate dateFin, Integer nbrHeures,
-			Float montantHT, UniteMontantTypeFinancement uniteMontant, Float tauxTVA) {
+	public TypeFinancementPossible() {
 		super();
-		this.id = id;
-		this.libelle = libelle;
-		this.dateDebut = dateDebut;
-		this.dateFin = dateFin;
-		this.nbrHeures = nbrHeures;
-		this.montantHT = montantHT;
-		this.uniteMontant = uniteMontant;
-		this.tauxTVA = tauxTVA;
+		// TODO Auto-generated constructor stub
 	}
 
 	/** Getter
@@ -136,31 +129,31 @@ public class TypeFinancementPossible {
 	}
 
 	/** Getter
-	 * @return the nbrHeures
+	 * @return the nbrUnites
 	 */
-	public Integer getNbrHeures() {
-		return nbrHeures;
+	public Integer getNbrUnites() {
+		return nbrUnites;
 	}
 
 	/** Setter
-	 * @param nbrHeures the nbrHeures to set
+	 * @param nbrUnites the nbrUnites to set
 	 */
-	public void setNbrHeures(Integer nbrHeures) {
-		this.nbrHeures = nbrHeures;
+	public void setNbrUnites(Integer nbrUnites) {
+		this.nbrUnites = nbrUnites;
 	}
 
 	/** Getter
-	 * @return the montantHT
+	 * @return the montantUniteHT
 	 */
-	public Float getMontantHT() {
-		return montantHT;
+	public Float getMontantUniteHT() {
+		return montantUniteHT;
 	}
 
 	/** Setter
-	 * @param montantHT the montantHT to set
+	 * @param montantUniteHT the montantUniteHT to set
 	 */
-	public void setMontantHT(Float montantHT) {
-		this.montantHT = montantHT;
+	public void setMontantUniteHT(Float montantUniteHT) {
+		this.montantUniteHT = montantUniteHT;
 	}
 
 	/** Getter
@@ -191,6 +184,21 @@ public class TypeFinancementPossible {
 		this.tauxTVA = tauxTVA;
 	}
 
-	
+	/** Getter
+	 * @return the financementsChoisis
+	 */
+	public List<TypeFinancementChoisi> getFinancementsChoisis() {
+		return financementsChoisis;
+	}
+
+	/** Setter
+	 * @param financementsChoisis the financementsChoisis to set
+	 */
+	public void setFinancementsChoisis(List<TypeFinancementChoisi> financementsChoisis) {
+		this.financementsChoisis = financementsChoisis;
+	}
+
+
+
 
 }

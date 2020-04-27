@@ -73,38 +73,21 @@ public class AbsenceStagiaire {
 	@Column(name = "MOTIF")
 	private String  motif;
 
-	/** Session/stagiaire */
+	/** Session stagiaire */
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns( {
-        @JoinColumn(name = "ID_SESSION",  referencedColumnName = "ID_SES", insertable=false, updatable=false),
-        @JoinColumn(name = "ID_STAGIAIRE", referencedColumnName = "ID_STAG", insertable=false, updatable=false)
-    })	
-	private SessionStagiaire sessionStagiaire;
+	@JoinColumns({
+		@JoinColumn(name="ID_SESSION", referencedColumnName="ID_SES"),
+		@JoinColumn(name="ID_STAGIAIRE", referencedColumnName="ID_STAG")
+	})
+	SessionStagiaire sessionStagiaire ;
+	
 
 	/**
-	 * @param id
-	 * @param dateDebut
-	 * @param dateFin
-	 * @param absenceDebutMatin
-	 * @param absenceDebutAprem
-	 * @param absenceFinMatin
-	 * @param absenceFinAprem
-	 * @param motif
-	 * @param sessionStagiaire
+	 * 
 	 */
-	public AbsenceStagiaire(Long id, LocalDate dateDebut, LocalDate dateFin, boolean absenceDebutMatin,
-			boolean absenceDebutAprem, boolean absenceFinMatin, boolean absenceFinAprem, String motif,
-			SessionStagiaire sessionStagiaire) {
+	public AbsenceStagiaire() {
 		super();
-		this.id = id;
-		this.dateDebut = dateDebut;
-		this.dateFin = dateFin;
-		this.absenceDebutMatin = absenceDebutMatin;
-		this.absenceDebutAprem = absenceDebutAprem;
-		this.absenceFinMatin = absenceFinMatin;
-		this.absenceFinAprem = absenceFinAprem;
-		this.motif = motif;
-		this.sessionStagiaire = sessionStagiaire;
+		// TODO Auto-generated constructor stub
 	}
 
 	/** Getter
@@ -232,8 +215,6 @@ public class AbsenceStagiaire {
 	public void setSessionStagiaire(SessionStagiaire sessionStagiaire) {
 		this.sessionStagiaire = sessionStagiaire;
 	}
-	
-	
 	
 
 }

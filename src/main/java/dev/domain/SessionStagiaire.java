@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Cacheable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -24,21 +27,29 @@ import dev.domain.finance.TypeFinancementChoisi;
  * @author DIGINAMIC
  *
  */
+/**
+ * @author acer
+ *
+ */
 @Entity
 @Table(name = "SESSION_STAGIAIRE")
 @Cacheable
-public class SessionStagiaire implements Serializable {
+public class SessionStagiaire implements Serializable{
 
-	private static long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
+
+	/** identifiant */
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID")
+	private Long id;
 
 	/** Session */
-	@Id
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ID_SES")
 	private Session  session;
 
 	/** Utilisateur */
-	@Id	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ID_STAG")
 	private Utilisateur stagiaire;
@@ -53,16 +64,21 @@ public class SessionStagiaire implements Serializable {
 	@OneToMany(mappedBy = "sessionStagiaire", fetch = FetchType.LAZY)
 	private List<AbsenceStagiaire> absencesStagiaires = new ArrayList<>();
 
+	public SessionStagiaire() {
+		
+	}
 
 	/**
+	 * @param id
 	 * @param session
 	 * @param stagiaire
 	 * @param typesFinChoisis
 	 * @param absencesStagiaires
 	 */
-	public SessionStagiaire(Session session, Utilisateur stagiaire, List<TypeFinancementChoisi> typesFinChoisis,
-			List<AbsenceStagiaire> absencesStagiaires) {
+	public SessionStagiaire(Long id, Session session, Utilisateur stagiaire,
+			List<TypeFinancementChoisi> typesFinChoisis, List<AbsenceStagiaire> absencesStagiaires) {
 		super();
+		this.id = id;
 		this.session = session;
 		this.stagiaire = stagiaire;
 		this.typesFinChoisis = typesFinChoisis;
@@ -70,20 +86,23 @@ public class SessionStagiaire implements Serializable {
 	}
 
 
+
 	/** Getter
-	 * @return the serialversionuid
+	 * @return the id
 	 */
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public Long getId() {
+		return id;
 	}
+
 
 
 	/** Setter
-	 * @param serialversionuid the serialversionuid to set
+	 * @param id the id to set
 	 */
-	public static void setSerialversionuid(long serialversionuid) {
-		serialVersionUID = serialversionuid;
+	public void setId(Long id) {
+		this.id = id;
 	}
+
 
 
 	/** Getter
@@ -94,12 +113,14 @@ public class SessionStagiaire implements Serializable {
 	}
 
 
+
 	/** Setter
 	 * @param session the session to set
 	 */
 	public void setSession(Session session) {
 		this.session = session;
 	}
+
 
 
 	/** Getter
@@ -110,12 +131,14 @@ public class SessionStagiaire implements Serializable {
 	}
 
 
+
 	/** Setter
 	 * @param stagiaire the stagiaire to set
 	 */
 	public void setStagiaire(Utilisateur stagiaire) {
 		this.stagiaire = stagiaire;
 	}
+
 
 
 	/** Getter
@@ -126,12 +149,14 @@ public class SessionStagiaire implements Serializable {
 	}
 
 
+
 	/** Setter
 	 * @param typesFinChoisis the typesFinChoisis to set
 	 */
 	public void setTypesFinChoisis(List<TypeFinancementChoisi> typesFinChoisis) {
 		this.typesFinChoisis = typesFinChoisis;
 	}
+
 
 
 	/** Getter
@@ -142,6 +167,7 @@ public class SessionStagiaire implements Serializable {
 	}
 
 
+
 	/** Setter
 	 * @param absencesStagiaires the absencesStagiaires to set
 	 */
@@ -149,7 +175,23 @@ public class SessionStagiaire implements Serializable {
 		this.absencesStagiaires = absencesStagiaires;
 	}
 
-	
+
+
+	/** DEBUT : Zone de calculs financier */
+	/**
+	 * Calcule le CA HT des type de financement choisi pour un stagiaire
+	 * d'une session
+	 * 
+	 * @return
+	 */
+	public float calc_CA_HT_typeFinChoisiStagiaire() {
+		float ca_HT_total = 0.0f ;
+		for( TypeFinancementChoisi typeFinChoisi : typesFinChoisis ) {
+			ca_HT_total += typeFinChoisi.calc_CA_HT_typeFinChoisi() ;
+		}
+		return ca_HT_total;
+	}
+	/** FIN   : Zone de calculs financier */
 
 
 

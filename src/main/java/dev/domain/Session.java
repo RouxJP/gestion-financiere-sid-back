@@ -995,15 +995,6 @@ public class Session implements Evenement, Cloneable {
 	 * 
 	 * @return
 	 */
-	public Float calculerChiffreAffaireTotalHT() {
-		// TODO
-		return null;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
 	public Float calculerMargeBruteHT() {
 		// TODO
 		return null;
