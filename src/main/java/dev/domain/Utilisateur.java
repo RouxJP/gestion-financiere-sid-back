@@ -25,6 +25,8 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
+import dev.domain.finance.ModPedCoutForm;
+
 /**
  * Représente un utilisateur (administrateur, planificateur, formateur, visiteur
  * ou stagiaire)
@@ -140,6 +142,14 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	@Column(name = "USER_MAJ")
 	private String userMaj;
 
+	/** Cout journalier HT du formatteur pour aide à la saisie */
+	@Column(name="COUT_JOUR_HT_AIDE_SAISIE")
+	private float coutJourHT_Formatteur;
+	
+	/** Droit d'autheur HT du formatteur pour aide à la saisie */
+	@Column(name="DROIT_AUTHEUR_HT_AIDE_SAISIE")
+	private float droitAutheurHT_Formatteur;
+	
 	/**
 	 * Liste des profils de l'utilisateur (exemple: administrateur et formateur)
 	 */
@@ -161,6 +171,10 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	/** indisponibilites : List de Indisponibilite */
 	@OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
 	private List<Indisponibilite> indisponibilites = new ArrayList<>();
+
+	/** Liste des couts formateurs par modalités pédagogiques */
+	@OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
+	private List<ModPedCoutForm> modPedCoutForms = new ArrayList<>();
 
 	/**
 	 * Uniquement pour un profil stagiaire: un stagiaire peut être rattaché à
@@ -771,4 +785,47 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 		this.session = session;
 	}
 
+	/** Getter
+	 * @return the coutJourHT_Formatteur
+	 */
+	public float getCoutJourHT_Formatteur() {
+		return coutJourHT_Formatteur;
+	}
+
+	/** Setter
+	 * @param coutJourHT_Formatteur the coutJourHT_Formatteur to set
+	 */
+	public void setCoutJourHT_Formatteur(float coutJourHT_Formatteur) {
+		this.coutJourHT_Formatteur = coutJourHT_Formatteur;
+	}
+
+	/** Getter
+	 * @return the droitAutheurHT_Formatteur
+	 */
+	public float getDroitAutheurHT_Formatteur() {
+		return droitAutheurHT_Formatteur;
+	}
+
+	/** Setter
+	 * @param droitAutheurHT_Formatteur the droitAutheurHT_Formatteur to set
+	 */
+	public void setDroitAutheurHT_Formatteur(float droitAutheurHT_Formatteur) {
+		this.droitAutheurHT_Formatteur = droitAutheurHT_Formatteur;
+	}
+
+	/** Getter
+	 * @return the modPedCoutForms
+	 */
+	public List<ModPedCoutForm> getModPedCoutForms() {
+		return modPedCoutForms;
+	}
+
+	/** Setter
+	 * @param modPedCoutForms the modPedCoutForms to set
+	 */
+	public void setModPedCoutForms(List<ModPedCoutForm> modPedCoutForms) {
+		this.modPedCoutForms = modPedCoutForms;
+	}
+
+	
 }

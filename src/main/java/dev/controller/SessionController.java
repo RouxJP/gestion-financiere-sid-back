@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.controller.vm.SessionLigneVM;
+import dev.domain.CoursPlanifie;
 import dev.domain.Session;
 import dev.domain.SessionStagiaire;
+import dev.repository.CoursPlanifieRepo;
 import dev.repository.SessionRepo;
 import dev.repository.SessionStagiaireRepo;
 
@@ -26,11 +28,15 @@ public class SessionController {
 	// Ici requêtes d'acces aux tables
 	private SessionRepo 			sessionRepo;	
 	private SessionStagiaireRepo 	sessionStagiaireRepo;	
+	private CoursPlanifieRepo 		coursPlanifieRepo;	
 
 	private static final Logger LOG = LoggerFactory.getLogger(dev.controller.SessionController.class);
 
-	public SessionController(SessionRepo sessionRepo, SessionStagiaireRepo sessionStagiaireRepo) {
-		this.sessionRepo 			= sessionRepo;
+	public SessionController(	SessionRepo 			sessionRepo, 
+								CoursPlanifieRepo 		coursPlanifieRepo,
+								SessionStagiaireRepo 	sessionStagiaireRepo) {
+		this.sessionRepo 			= sessionRepo;		
+		this.coursPlanifieRepo 		= coursPlanifieRepo;
 		this.sessionStagiaireRepo 	= sessionStagiaireRepo;
 	}
 
@@ -94,6 +100,14 @@ public class SessionController {
 			Float 	calcPourMargeBrute 			= 0.0f;
 			
 			// *** Calculer le coût HT  d'une session */
+			List<CoursPlanifie> coursPlanifies = this.coursPlanifieRepo.findBySession( sessionLigne) ;
+			for( CoursPlanifie coursPlanifie : coursPlanifies ) {
+				calcCoutTotalHT += coursPlanifie.calc_Cout_HT_coursPlanifie();
+				LOG.info( "Session-Formatteur-Cout : " + 
+						coursPlanifie.getSession().getId() + " - " +
+						coursPlanifie.getFormateur().getId()  + " - " +
+						coursPlanifie.calc_Cout_HT_coursPlanifie());
+			}
 			sessionLigne.setCalcCoutTotalHT(calcCoutTotalHT);
 			
 			//** Calculer le CA HT de la session */
