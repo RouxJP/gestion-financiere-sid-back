@@ -31,7 +31,7 @@ import dev.domain.SessionStagiaire;
  * ne peut pas etre considéré comme absent
  * 
  * 
- * @author DIGINAMIC
+ * @author JP ROUX
  *
  */
 @Entity

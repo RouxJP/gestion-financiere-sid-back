@@ -142,6 +142,7 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	@Column(name = "USER_MAJ")
 	private String userMaj;
 
+	/** DEBUT : JP ROUX : calculs finnaciers */
 	/** Cout journalier HT du formatteur pour aide à la saisie */
 	@Column(name="COUT_JOUR_HT_AIDE_SAISIE")
 	private float coutJourHT_Formatteur;
@@ -149,6 +150,7 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	/** Droit d'autheur HT du formatteur pour aide à la saisie */
 	@Column(name="DROIT_AUTHEUR_HT_AIDE_SAISIE")
 	private float droitAutheurHT_Formatteur;
+	/** FIN  : JP ROUX : calculs finnaciers */
 	
 	/**
 	 * Liste des profils de l'utilisateur (exemple: administrateur et formateur)
@@ -172,7 +174,7 @@ public class Utilisateur implements Ressource, Comparable<Utilisateur> {
 	@OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
 	private List<Indisponibilite> indisponibilites = new ArrayList<>();
 
-	/** Liste des couts formateurs par modalités pédagogiques */
+	/** Liste des couts formateurs par modalités pédagogiques JP ROUX*/
 	@OneToMany(mappedBy = "utilisateur", fetch = FetchType.LAZY)
 	private List<ModPedCoutForm> modPedCoutForms = new ArrayList<>();
 

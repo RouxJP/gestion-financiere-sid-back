@@ -1,6 +1,7 @@
 package dev.domain;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,11 +25,7 @@ import dev.domain.finance.TypeFinancementChoisi;
  *  - une liste de  type de financements choisis
  *  - une liste d'absences du stagiaire 
  *  
- * @author DIGINAMIC
- *
- */
-/**
- * @author acer
+ * @author JP ROUX
  *
  */
 @Entity
@@ -36,7 +33,7 @@ import dev.domain.finance.TypeFinancementChoisi;
 @Cacheable
 public class SessionStagiaire implements Serializable{
 
-	private static final long serialVersionUID = 1L;
+	private static long serialVersionUID = 1L;
 
 	/** identifiant */
 	@Id
@@ -64,120 +61,20 @@ public class SessionStagiaire implements Serializable{
 	@OneToMany(mappedBy = "sessionStagiaire", fetch = FetchType.LAZY)
 	private List<AbsenceStagiaire> absencesStagiaires = new ArrayList<>();
 
-	public SessionStagiaire() {
-		
-	}
-
+	
+	/** DEBUT : Zone de Calculs */
 	/**
-	 * @param id
-	 * @param session
-	 * @param stagiaire
-	 * @param typesFinChoisis
-	 * @param absencesStagiaires
+	 * Calculer les absences entre deux dates
+	 * 
+	 * @param 
+	 * dateDebut : date de calcul de début d'absence
+	 * dateFin   : date de calcul de fin   d'absence
 	 */
-	public SessionStagiaire(Long id, Session session, Utilisateur stagiaire,
-			List<TypeFinancementChoisi> typesFinChoisis, List<AbsenceStagiaire> absencesStagiaires) {
-		super();
-		this.id = id;
-		this.session = session;
-		this.stagiaire = stagiaire;
-		this.typesFinChoisis = typesFinChoisis;
-		this.absencesStagiaires = absencesStagiaires;
+	public float calcAbsences( LocalDate dateDebut, LocalDate dateFin ) {
+		/** TODO */
+		return 0;
 	}
-
-
-
-	/** Getter
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
-
-
-
-	/** Setter
-	 * @param id the id to set
-	 */
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-
-
-	/** Getter
-	 * @return the session
-	 */
-	public Session getSession() {
-		return session;
-	}
-
-
-
-	/** Setter
-	 * @param session the session to set
-	 */
-	public void setSession(Session session) {
-		this.session = session;
-	}
-
-
-
-	/** Getter
-	 * @return the stagiaire
-	 */
-	public Utilisateur getStagiaire() {
-		return stagiaire;
-	}
-
-
-
-	/** Setter
-	 * @param stagiaire the stagiaire to set
-	 */
-	public void setStagiaire(Utilisateur stagiaire) {
-		this.stagiaire = stagiaire;
-	}
-
-
-
-	/** Getter
-	 * @return the typesFinChoisis
-	 */
-	public List<TypeFinancementChoisi> getTypesFinChoisis() {
-		return typesFinChoisis;
-	}
-
-
-
-	/** Setter
-	 * @param typesFinChoisis the typesFinChoisis to set
-	 */
-	public void setTypesFinChoisis(List<TypeFinancementChoisi> typesFinChoisis) {
-		this.typesFinChoisis = typesFinChoisis;
-	}
-
-
-
-	/** Getter
-	 * @return the absencesStagiaires
-	 */
-	public List<AbsenceStagiaire> getAbsencesStagiaires() {
-		return absencesStagiaires;
-	}
-
-
-
-	/** Setter
-	 * @param absencesStagiaires the absencesStagiaires to set
-	 */
-	public void setAbsencesStagiaires(List<AbsenceStagiaire> absencesStagiaires) {
-		this.absencesStagiaires = absencesStagiaires;
-	}
-
-
-
-	/** DEBUT : Zone de calculs financier */
+	
 	/**
 	 * Calcule le CA HT des type de financement choisi pour un stagiaire
 	 * d'une session
@@ -191,8 +88,99 @@ public class SessionStagiaire implements Serializable{
 		}
 		return ca_HT_total;
 	}
-	/** FIN   : Zone de calculs financier */
+	/** FIN : Zone de Calculs */
 
+	/**
+	 * 
+	 */
+	public SessionStagiaire() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
+	/** Getter
+	 * @return the serialversionuid
+	 */
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	/** Setter
+	 * @param serialversionuid the serialversionuid to set
+	 */
+	public static void setSerialversionuid(long serialversionuid) {
+		serialVersionUID = serialversionuid;
+	}
+
+	/** Getter
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/** Setter
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	/** Getter
+	 * @return the session
+	 */
+	public Session getSession() {
+		return session;
+	}
+
+	/** Setter
+	 * @param session the session to set
+	 */
+	public void setSession(Session session) {
+		this.session = session;
+	}
+
+	/** Getter
+	 * @return the stagiaire
+	 */
+	public Utilisateur getStagiaire() {
+		return stagiaire;
+	}
+
+	/** Setter
+	 * @param stagiaire the stagiaire to set
+	 */
+	public void setStagiaire(Utilisateur stagiaire) {
+		this.stagiaire = stagiaire;
+	}
+
+	/** Getter
+	 * @return the typesFinChoisis
+	 */
+	public List<TypeFinancementChoisi> getTypesFinChoisis() {
+		return typesFinChoisis;
+	}
+
+	/** Setter
+	 * @param typesFinChoisis the typesFinChoisis to set
+	 */
+	public void setTypesFinChoisis(List<TypeFinancementChoisi> typesFinChoisis) {
+		this.typesFinChoisis = typesFinChoisis;
+	}
+
+	/** Getter
+	 * @return the absencesStagiaires
+	 */
+	public List<AbsenceStagiaire> getAbsencesStagiaires() {
+		return absencesStagiaires;
+	}
+
+	/** Setter
+	 * @param absencesStagiaires the absencesStagiaires to set
+	 */
+	public void setAbsencesStagiaires(List<AbsenceStagiaire> absencesStagiaires) {
+		this.absencesStagiaires = absencesStagiaires;
+	}
+	
 
 }

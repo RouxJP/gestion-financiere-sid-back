@@ -21,6 +21,13 @@ import dev.repository.CoursPlanifieRepo;
 import dev.repository.SessionRepo;
 import dev.repository.SessionStagiaireRepo;
 
+/**
+ * Ensemble des API pour communiquer avec le front pour la liste des sessions
+ * 
+ * @author JP ROUX
+ * 
+ */
+
 @RestController
 @CrossOrigin
 public class SessionController {
@@ -94,6 +101,12 @@ public class SessionController {
 		
 		/** Intégrer les calculs dans la liste des sessions*/
 		for( Session sessionLigne : listeSessionsRepo) {
+			/** Calculer la societe, la salle, la moyenne de stagiaire */
+			sessionLigne.setCalcNomSociete( sessionLigne.calculerNomSociete());
+			sessionLigne.setCalcSalleFormation( sessionLigne.calculerSalleFormation( sessionLigne.getNom()));
+			sessionLigne.setCalcNbrStagiairesFormation( sessionLigne.calculerMoyenneStagiairesFormation());
+			
+			/** Calculer les coûts HT, CA HT et marges */
 			Float 	calcCoutTotalHT 			= 0.0f;		
 			Float 	calcChiffreAffaireTotalHT 	= 0.0f;
 			Float 	calcMargeBruteHT 			= 0.0f;
@@ -108,7 +121,7 @@ public class SessionController {
 						coursPlanifie.getFormateur().getId()  + " - " +
 						coursPlanifie.calc_Cout_HT_coursPlanifie());
 			}
-			sessionLigne.setCalcCoutTotalHT(calcCoutTotalHT);
+			sessionLigne.setCalcCoutTotalHT( calcCoutTotalHT);
 			
 			//** Calculer le CA HT de la session */
 			List<SessionStagiaire> sessionStagiaires = this.sessionStagiaireRepo.findBySession( sessionLigne) ;
@@ -119,19 +132,28 @@ public class SessionController {
 						sessionStagiaire.getStagiaire().getId() + " - " +
 						sessionStagiaire.calc_CA_HT_typeFinChoisiStagiaire());
 			}
-			sessionLigne.setCalcChiffreAffaireTotalHT(calcChiffreAffaireTotalHT);
+			sessionLigne.setCalcChiffreAffaireTotalHT( calcChiffreAffaireTotalHT);
 			
 			// En déduire la marge brute totale
-			sessionLigne.setCalcMargeBruteHT(calcMargeBruteHT);
+			calcMargeBruteHT = calcChiffreAffaireTotalHT - calcCoutTotalHT ;
+			sessionLigne.setCalcMargeBruteHT( calcMargeBruteHT);
 			
 			// En déduire la pourcentage de marge brute totale
-			sessionLigne.setCalcPourMargeBrute(calcPourMargeBrute);	
-			
+			calcPourMargeBrute = calcMargeBruteHT/ calcChiffreAffaireTotalHT;
+			sessionLigne.setCalcPourMargeBrute( calcPourMargeBrute);	
+						
 		} 
 		
-		/** Maj de la	 liste des session envoyée */
+		/** Gérér l'affichage des lignes de sessions en blanc/bleu */
+		/** Calculer les totaux */
 		List<SessionLigneVM> listeSessionVM = listeSessionsRepo.stream().map(session -> new SessionLigneVM( session)).collect( Collectors.toList());
 		int 	indice 						= 0;
+		int		totNbrFormation          	= 0 ;
+		int		totJourFormation          	= 0 ;
+		Float	totStagiaireFormation       = 0.0f ;
+		Float	tot_CA_HT_Formation         = 0.0f ;
+		Float	tot_Cout_HT_Formation       = 0.0f ;
+		
 		for( SessionLigneVM sessionLigne : listeSessionVM) {
 			// Gerer l'affichage des lignes sur le front
 			if( indice % 2 == 0) {
@@ -141,12 +163,32 @@ public class SessionController {
 				/** Ligne de session affichée en blanc */
 				sessionLigne.setValeurAttributClasseLigne("");
 			}
-			
+
+			/** Calculer les totaux */
+			totNbrFormation++ ;
+			totJourFormation          	+= sessionLigne.getNbrJoursFormation() ;
+			totStagiaireFormation       += sessionLigne.getNbrStagiairesFormation() ;
+			tot_CA_HT_Formation         += sessionLigne.getTot_CA_HT() ;
+			tot_Cout_HT_Formation       += sessionLigne.getTotCout_HT() ;
+					
 			indice++;
 			LOG.info( "*** Nom de session / salle : " 
 					+ sessionLigne.getNomSession() + " / " + sessionLigne.getNomSalleFormation());
 
 		}
+		Float	totMargeBrute_HT		= 0.0f;
+		Float	pourcTotMargeBrute_HT	= 0.0f;
+		
+		totMargeBrute_HT= tot_CA_HT_Formation - tot_Cout_HT_Formation ;
+		pourcTotMargeBrute_HT= totMargeBrute_HT /  tot_CA_HT_Formation ;
+		
+		SessionLigneVM 	sessionLigneTotaux 	= 
+				new SessionLigneVM( 
+						String.valueOf( totNbrFormation), 
+						totJourFormation, 		tot_Cout_HT_Formation,
+						tot_CA_HT_Formation,	totMargeBrute_HT, 		pourcTotMargeBrute_HT,
+						totStagiaireFormation);
+		listeSessionVM.add( sessionLigneTotaux) ;
 		
 		/** Renvoyer au front les résultats */
 		return listeSessionVM ;
