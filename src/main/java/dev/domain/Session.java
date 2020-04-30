@@ -319,9 +319,9 @@ public class Session implements Evenement, Cloneable {
 		this.calcMargeBruteHT			= 0.0f;
 		this.calcPourMargeBrute			= 0.0f;
 		
-		this.calcNbrStagiairesFormation = calculerMoyenneStagiairesFormation();
-		this.calcNomSociete				= calculerNomSociete();
-		this.calcSalleFormation			= calculerSalleFormation( this.getNom());
+		this.calcNbrStagiairesFormation = 0.0f;
+		this.calcNomSociete				= "";
+		this.calcSalleFormation			= "";
 	}
 	
 	/** Fin : Zone de Calculs financiers */
