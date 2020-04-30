@@ -1,15 +1,22 @@
 package dev.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import dev.domain.finance.ModPedCoutForm;
 
 /**
  * Représente une modalité pédagogique associée à un cours
@@ -59,6 +66,10 @@ public class ModalitePedagogique {
 	/** emargement : boolean */
 	@Column(name = "emargement")
 	private boolean emargement;
+
+	/** Liste des couts formateurs par modalités pédagogiques */
+	@OneToMany(mappedBy = "modalitePedagogique", fetch = FetchType.LAZY)
+	private List<ModPedCoutForm> modPedCoutForms = new ArrayList<>();
 
 	/**
 	 * Constructor
@@ -259,4 +270,19 @@ public class ModalitePedagogique {
 		this.emargement = emargement;
 	}
 
+	/** Getter
+	 * @return the modPedCoutForms
+	 */
+	public List<ModPedCoutForm> getModPedCoutForms() {
+		return modPedCoutForms;
+	}
+
+	/** Setter
+	 * @param modPedCoutForms the modPedCoutForms to set
+	 */
+	public void setModPedCoutForms(List<ModPedCoutForm> modPedCoutForms) {
+		this.modPedCoutForms = modPedCoutForms;
+	}
+
+	
 }

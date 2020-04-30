@@ -177,7 +177,7 @@ public class Session implements Evenement, Cloneable {
 	private String calcNomSociete;
 
 	@Transient
-	public Integer calcNbrStagiairesFormation;
+	public Float calcNbrStagiairesFormation;
 
 	@Transient
 	public Float calcCoutTotalHT;
@@ -193,70 +193,140 @@ public class Session implements Evenement, Cloneable {
 
 	/** Fin : Zones de champs servant aux calculs financiers */
 
+	/** Début : Zone de Calculs financiers JP Roux */
+	/***********************************************/
 	/**
-	 * Constructeur
-	 */
-	public Session() {
-		super();
-	}
-
-	/**
-	 * Constructeur
+	 * Moyenne des stagiaires de la session au prorata du temps passé
 	 * 
-	 * @param id identifiant
+	 * @return Integer : Nombre de stagiaire de la formation
+	 * 
+	 * @author JP ROUX
 	 */
-	public Session(Long id) {
-		this.id = id;
+	public Float calculerMoyenneStagiairesFormation() {
+		//** Si aucunes absences le nbr de stagiaire est : */
+		Float nbrStagiaire = (float) stagiaires.size() ;
+		LOG.info("nbrStagiaire  : " + nbrStagiaire + " pour la session "
+				+ this.getNom());
+		
+		//** Prendre en compte les absences des stagiaires sur la période de formation */
+		Float abscenceStagiaire		= 0.0f;
+		for( Utilisateur stagiaire : this.stagiaires) {
+			//** TODO */
+			abscenceStagiaire += 0.0f;
+		}
+		
+		//** Présence des stagiaires si pas d'absence */
+		Float dureeSessionFormation 	= (float) calculerDuree();
+		Float presenceStagiaires		= dureeSessionFormation * nbrStagiaire;
+		
+		/** Prorata de présence de stagiaires */
+		Float prorataPresenceStagiaire	= (presenceStagiaires - abscenceStagiaire) / presenceStagiaires ;
+		
+		Float moyenneStagiaire = nbrStagiaire * prorataPresenceStagiaire ;
+		LOG.info("MoyenneStagiairesFormation  : " + moyenneStagiaire + " pour la session "
+				+ this.getNom());
+		
+		return moyenneStagiaire;
+	}
+
+
+	/**
+	 * On met le nom de l'entreprise des stiagiares si il y en a qu'une, sinon INTER
+	 * 
+	 * @param calcNomSociete the calcNomSociete to set
+	 * 
+	 * @author JP ROUX
+	 */
+	public String calculerNomSociete() {
+
+		String nomSociete = null;
+		for (Utilisateur stagiaire : getStagiaires()) {
+			if (!stagiaire.getSociete().getNom().equals(nomSociete)) {
+				if (nomSociete == null) {
+					// Première entreprise récupérée
+					nomSociete = stagiaire.getSociete().getNom();
+				} else {
+					nomSociete = MULTI_ENTREPRISE;
+				}
+			}
+			// LOG.info( "Entreprise : " + nomSociete);
+
+		}
+
+		return nomSociete;
 	}
 
 	/**
-	 * Constructeur
+	 * Calcule le nom de la salle de formation : si il y en a plusieurs on affiche
+	 * celle qui représente le plus de jour.
 	 * 
-	 * @param id               identifiant
-	 * @param nom              nom
-	 * @param dateDebut        date de début
-	 * @param dateFin          date de fin
-	 * @param idFormation      id de la formation
-	 * @param nomCertification nom de la certification
+	 * @return String : Nom de la salle de formation
+	 * 
+	 * @author JP ROUX 
 	 */
-	public Session(Long id, String nom, LocalDate dateDebut, LocalDate dateFin, Long idFormation,
-			String nomCertification) {
-		this.id = id;
-		this.nom = nom;
-		this.dateDebut = dateDebut;
-		this.dateFin = dateFin;
-		this.formation = new Formation(idFormation, nomCertification);
+	public String calculerSalleFormation(String nomSession) {
+		List<DureeSalleSession> lstSalles = new ArrayList<DureeSalleSession>();
 
-		/** Calculs financiers */
-		calculerNomSociete();
+		if (cours.isEmpty()) {
+			/** Pas de cours planifiée !! */
+			LOG.error("Pas de salle ! pour la session " + nomSession);
+			return "Pas de salle !";
+		}
+
+		for (CoursPlanifie cours : getCours()) {
+			boolean salleTrouvee = false;
+			for (DureeSalleSession sallesFormation : lstSalles) {
+				if (lstSalles.isEmpty()) {
+					break;
+				}
+				
+				if (cours.getSalle().getNom().contentEquals(sallesFormation.getNomSalle())) {
+					/** Salles déja trouvée on incremente sa durée d'utilisation pour la session */
+					int duree = sallesFormation.getDureeUtilisation() + cours.getDuree();
+					sallesFormation.setDureeUtilisation(duree);
+					salleTrouvee = true;
+					break;
+				}
+			}
+			
+			if (salleTrouvee == false) {
+				/** La salle n'a pas été trouvée */
+				lstSalles.add(new DureeSalleSession(cours.getSalle().getNom(), cours.getDuree()));
+			}
+		}
+
+		/** Déterminer la salle qui a été la plus occupée */
+		DureeSalleSession salleFormationLaPlusUtilisee = lstSalles.get(0);
+		for (DureeSalleSession salleFormation : lstSalles) {
+			// LOG.info(salleFormation.getNomSalle() + " : " + salleFormation.getDureeUtilisation());
+			if (salleFormationLaPlusUtilisee.getDureeUtilisation() < salleFormation.getDureeUtilisation()) {
+				salleFormationLaPlusUtilisee = salleFormation;
+			}
+		}
+		LOG.info("Salle la plus utilisée  : " + salleFormationLaPlusUtilisee.getNomSalle() + " pour la session "
+				+ nomSession);
+		return salleFormationLaPlusUtilisee.getNomSalle();
 	}
-
+	
 	/**
-	 * Constructeur
+	 * Initialiser les attributs pour les calculs financiers
 	 * 
-	 * @param id        identifiant
-	 * @param nom       nom
-	 * @param formation formation
+	 * @author JP ROUX 
 	 */
-	public Session(Long id, String nom, Formation formation) {
-		this.id = id;
-		this.nom = nom;
-		this.formation = formation;
+	private void initAttributCalculs() {
+		this.calcChiffreAffaireTotalHT 	= 0.0f;
+		this.calcCoutTotalHT			= 0.0f;
+		this.calcMargeBruteHT			= 0.0f;
+		this.calcPourMargeBrute			= 0.0f;
+		
+		this.calcNbrStagiairesFormation = calculerMoyenneStagiairesFormation();
+		this.calcNomSociete				= calculerNomSociete();
+		this.calcSalleFormation			= calculerSalleFormation( this.getNom());
 	}
-
-	/**
-	 * Constructeur
-	 * 
-	 * @param formation formation associée
-	 * @param dateDebut date de début
-	 * @param feries    liste des jours feriés
-	 */
-	public Session(Formation formation, LocalDate dateDebut, List<AbstractPeriode> feries) {
-		this.formation = formation;
-		this.dateDebut = dateDebut;
-
-		this.dateFin = DateUtils.calculeDateFin(dateDebut, feries, formation.getDuree());
-	}
+	
+	/** Fin : Zone de Calculs financiers */
+	/***************************************/	
+	
 
 	/**
 	 * Calcule la durée d'une session en nb de jours
@@ -362,7 +432,86 @@ public class Session implements Evenement, Cloneable {
 		}
 		return "";
 	}
+	
+	/** DEBUT : Zone de constructeur */
+	/**
+	 * Constructeur
+	 */
+	public Session() {
+		super();
 
+		initAttributCalculs();
+
+	}
+
+	/**
+	 * Constructeur
+	 * 
+	 * @param id identifiant
+	 */
+	public Session(Long id) {
+		this.id = id;
+
+		initAttributCalculs();
+
+	}
+
+	/**
+	 * Constructeur
+	 * 
+	 * @param id               identifiant
+	 * @param nom              nom
+	 * @param dateDebut        date de début
+	 * @param dateFin          date de fin
+	 * @param idFormation      id de la formation
+	 * @param nomCertification nom de la certification
+	 */
+	public Session(Long id, String nom, LocalDate dateDebut, LocalDate dateFin, Long idFormation,
+			String nomCertification) {
+		this.id = id;
+		this.nom = nom;
+		this.dateDebut = dateDebut;
+		this.dateFin = dateFin;
+		this.formation = new Formation(idFormation, nomCertification);
+		
+		initAttributCalculs();
+	}
+
+	/**
+	 * Constructeur
+	 * 
+	 * @param id        identifiant
+	 * @param nom       nom
+	 * @param formation formation
+	 */
+	public Session(Long id, String nom, Formation formation) {
+		this.id = id;
+		this.nom = nom;
+		this.formation = formation;
+		
+		initAttributCalculs();
+		
+	}
+
+	/**
+	 * Constructeur
+	 * 
+	 * @param formation formation associée
+	 * @param dateDebut date de début
+	 * @param feries    liste des jours feriés
+	 */
+	public Session(Formation formation, LocalDate dateDebut, List<AbstractPeriode> feries) {
+		this.formation = formation;
+		this.dateDebut = dateDebut;
+		this.dateFin = DateUtils.calculeDateFin(dateDebut, feries, formation.getDuree());
+		
+		initAttributCalculs();
+
+	}
+	/** FIN   : Zone de constructeur */
+	
+	
+	
 	/**
 	 * Getter for dateDebut
 	 * 
@@ -893,7 +1042,7 @@ public class Session implements Evenement, Cloneable {
 	 * 
 	 * @return the calcNbrStagiairesFormation
 	 */
-	public Integer getCalcNbrStagiairesFormation() {
+	public Float getCalcNbrStagiairesFormation() {
 		return calcNbrStagiairesFormation;
 	}
 
@@ -902,7 +1051,7 @@ public class Session implements Evenement, Cloneable {
 	 * 
 	 * @param calcNbrStagiairesFormation the calcNbrStagiairesFormation to set
 	 */
-	public void setCalcNbrStagiairesFormation(Integer calcNbrStagiairesFormation) {
+	public void setCalcNbrStagiairesFormation(Float calcNbrStagiairesFormation) {
 		this.calcNbrStagiairesFormation = calcNbrStagiairesFormation;
 	}
 
@@ -978,135 +1127,6 @@ public class Session implements Evenement, Cloneable {
 		this.calcPourMargeBrute = calcPourMargeBrute;
 	}
 
-	/** Début : Zone de Calculs financiers */
-	/***************************************/
-	/**
-	 * Nombre de stagiaire de la formation : moyenne des stagiaires de la session au
-	 * prorata du temps passé
-	 * 
-	 * @return Integer : Nombre de stagiaire de la formation
-	 */
-	public Integer calculerNbrStagiairesFormation() {
-		// TODO
-		return null;
-	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	public Float calculerChiffreAffaireTotalHT() {
-		// TODO
-		return null;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public Float calculerMargeBruteHT() {
-		// TODO
-		return null;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public Float calculerPourMargeBrute() {
-		// TODO
-		return null;
-	}
-
-	/**
-	 * On met le nom de l'entreprise des stiagiares si il y en a qu'une, sinon INTER
-	 * 
-	 * @param calcNomSociete the calcNomSociete to set
-	 */
-	public String calculerNomSociete() {
-
-		String nomSociete = null;
-		for (Utilisateur stagiaire : getStagiaires()) {
-			if (!stagiaire.getSociete().getNom().equals(nomSociete)) {
-				if (nomSociete == null) {
-					// Première entreprise récupérée
-					nomSociete = stagiaire.getSociete().getNom();
-				} else {
-					nomSociete = MULTI_ENTREPRISE;
-				}
-			}
-			// LOG.info( "Entreprise : " + nomSociete);
-
-		}
-
-		return nomSociete;
-	}
-
-	/**
-	 * Calcule le nom de la salle de formation : si il y en a plusieurs on affiche
-	 * celle qui représente le plus de jour.
-	 * 
-	 * @return String : Nom de la salle de formation
-	 */
-	public String calculerSalleFormation(String nomSession) {
-		List<DureeSalleSession> lstSalles = new ArrayList<DureeSalleSession>();
-
-		if (cours.isEmpty()) {
-			/** Pas de cours planifiée !! */
-			LOG.error("Pas de salle ! pour la session " + nomSession);
-			return "Pas de salle !";
-		}
-
-		for (CoursPlanifie cours : getCours()) {
-			boolean salleTrouvee = false;
-			for (DureeSalleSession sallesFormation : lstSalles) {
-				if (lstSalles.isEmpty()) {
-					break;
-				}
-				
-				if (cours.getSalle().getNom().contentEquals(sallesFormation.getNomSalle())) {
-					/** Salles déja trouvée on incremente sa durée d'utilisation pour la session */
-					int duree = sallesFormation.getDureeUtilisation() + cours.getDuree();
-					sallesFormation.setDureeUtilisation(duree);
-					salleTrouvee = true;
-					break;
-				}
-			}
-			
-			if (salleTrouvee == false) {
-				/** La salle n'a pas été trouvée */
-				lstSalles.add(new DureeSalleSession(cours.getSalle().getNom(), cours.getDuree()));
-			}
-		}
-
-		/** Déterminer la salle qui a été la plus occupée */
-		DureeSalleSession salleFormationLaPlusUtilisee = lstSalles.get(0);
-		for (DureeSalleSession salleFormation : lstSalles) {
-			// LOG.info(salleFormation.getNomSalle() + " : " + salleFormation.getDureeUtilisation());
-			if (salleFormationLaPlusUtilisee.getDureeUtilisation() < salleFormation.getDureeUtilisation()) {
-				salleFormationLaPlusUtilisee = salleFormation;
-			}
-		}
-		LOG.info("Salle la plus utilisée  : " + salleFormationLaPlusUtilisee.getNomSalle() + " pour la session "
-				+ nomSession);
-		return salleFormationLaPlusUtilisee.getNomSalle();
-	}
-	
-	/**
-	 * Calcule le coût total HT pour une session de formation.
-	 * C'est la somme des montants hors taxe des lignes de commandes 
-	 * qui sont rattachées à la session
-	 * @return
-	 */
-	public Float calculerCoutTotalHT() {
-		Float totCoutHTSession = 0.0F;
-		
-		return null;
-	}
-
-
-
-	/** Fin : Zone de Calculs financiers */
-	/***************************************/
 
 }

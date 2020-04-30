@@ -19,6 +19,10 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import dev.domain.finance.ModPedCoutForm;
 
 /**
  * Représente un cours planifié pour une session donnée
@@ -29,6 +33,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 @Entity
 @Table(name = "COURS_PLANIFIE")
 public class CoursPlanifie implements Evenement {
+
+	private static final Logger LOG = LoggerFactory.getLogger(dev.domain.CoursPlanifie.class);
+
 
 	/** identifiant */
 	@Id
@@ -601,4 +608,33 @@ public class CoursPlanifie implements Evenement {
 		return libelle;
 	}
 
+	/** DEBUT : Zone de calcul */
+	/**
+	 * Calculer le coût HT d'un cours : 
+	 * 
+	 *   ( durée en jour du cours * coût jour ht du formatteur) + ( droit_autheur)
+	 *   
+	 * @return
+	 */
+	public float calc_Cout_HT_coursPlanifie() {
+		float cout_cours_ht 				= 0.0f;
+		float coutJour_HT_Formatteur 		= 0.0f;
+		float droitAutheur_HT_Formatteur 	= 0.0f;
+		
+		/** Rechercher le cout du formatteur pour cette modalite pedagogique */
+		for( ModPedCoutForm modPedCoutForm : getFormateur().getModPedCoutForms()) {
+			if( modalitePedagogique.getId() == modPedCoutForm.getModalitePedagogique().getId()) {
+				coutJour_HT_Formatteur 		= modPedCoutForm.getCoutJourHT_Formatteur();
+				droitAutheur_HT_Formatteur 	= modPedCoutForm.getDroitAutheurHT_Formatteur();
+				break;
+			}
+		}
+		
+		cout_cours_ht = ( getDuree() * coutJour_HT_Formatteur) + droitAutheur_HT_Formatteur ;
+		LOG.info( "Cours-Cout : " + getId() + " - " + getLibelle() + " - " + cout_cours_ht);
+				
+		return(  cout_cours_ht);
+	}
+	/** FIN   : Zone de calcul */
+	
 }

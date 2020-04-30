@@ -14,25 +14,37 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.controller.vm.SessionLigneVM;
+import dev.domain.CoursPlanifie;
 import dev.domain.Session;
-import dev.domain.finance.BonCommande;
-import dev.domain.finance.LigneCommande;
-import dev.repository.BonCommandeRepo;
+import dev.domain.SessionStagiaire;
+import dev.repository.CoursPlanifieRepo;
 import dev.repository.SessionRepo;
+import dev.repository.SessionStagiaireRepo;
+
+/**
+ * Ensemble des API pour communiquer avec le front pour la liste des sessions
+ * 
+ * @author JP ROUX
+ * 
+ */
 
 @RestController
 @CrossOrigin
 public class SessionController {
 
 	// Ici requêtes d'acces aux tables
-	private SessionRepo sessionRepo;	
-	private BonCommandeRepo bonCommandeRepo;	
+	private SessionRepo 			sessionRepo;	
+	private SessionStagiaireRepo 	sessionStagiaireRepo;	
+	private CoursPlanifieRepo 		coursPlanifieRepo;	
 
 	private static final Logger LOG = LoggerFactory.getLogger(dev.controller.SessionController.class);
 
-	public SessionController(SessionRepo sessionRepo, BonCommandeRepo bonCommandeRepo) {
-		this.sessionRepo 		= sessionRepo;
-		this.bonCommandeRepo 	= bonCommandeRepo;
+	public SessionController(	SessionRepo 			sessionRepo, 
+								CoursPlanifieRepo 		coursPlanifieRepo,
+								SessionStagiaireRepo 	sessionStagiaireRepo) {
+		this.sessionRepo 			= sessionRepo;		
+		this.coursPlanifieRepo 		= coursPlanifieRepo;
+		this.sessionStagiaireRepo 	= sessionStagiaireRepo;
 	}
 
 
@@ -89,33 +101,59 @@ public class SessionController {
 		
 		/** Intégrer les calculs dans la liste des sessions*/
 		for( Session sessionLigne : listeSessionsRepo) {
-			//** Calculer les couts financiers liés aux lignes de commandes */
-			List<BonCommande> listeBonCommandeRepo 		= this.bonCommandeRepo.findBySession( sessionLigne);
+			/** Calculer la societe, la salle, la moyenne de stagiaire */
+			sessionLigne.setCalcNomSociete( sessionLigne.calculerNomSociete());
+			sessionLigne.setCalcSalleFormation( sessionLigne.calculerSalleFormation( sessionLigne.getNom()));
+			sessionLigne.setCalcNbrStagiairesFormation( sessionLigne.calculerMoyenneStagiairesFormation());
+			
+			/** Calculer les coûts HT, CA HT et marges */
 			Float 	calcCoutTotalHT 			= 0.0f;		
 			Float 	calcChiffreAffaireTotalHT 	= 0.0f;
 			Float 	calcMargeBruteHT 			= 0.0f;
 			Float 	calcPourMargeBrute 			= 0.0f;
-			for( BonCommande listeBonCommande : listeBonCommandeRepo) {
-				for( LigneCommande listeLigneCommande : listeBonCommande.getLignes()) {
-					calcCoutTotalHT += listeLigneCommande.getMontantHT();
-				}
-			}
-			sessionLigne.setCalcCoutTotalHT(calcCoutTotalHT);
 			
-			//** Calculer le CA financiers */
-			sessionLigne.setCalcChiffreAffaireTotalHT(calcChiffreAffaireTotalHT);
+			// *** Calculer le coût HT  d'une session */
+			List<CoursPlanifie> coursPlanifies = this.coursPlanifieRepo.findBySession( sessionLigne) ;
+			for( CoursPlanifie coursPlanifie : coursPlanifies ) {
+				calcCoutTotalHT += coursPlanifie.calc_Cout_HT_coursPlanifie();
+				LOG.info( "Session-Formatteur-Cout : " + 
+						coursPlanifie.getSession().getId() + " - " +
+						coursPlanifie.getFormateur().getId()  + " - " +
+						coursPlanifie.calc_Cout_HT_coursPlanifie());
+			}
+			sessionLigne.setCalcCoutTotalHT( calcCoutTotalHT);
+			
+			//** Calculer le CA HT de la session */
+			List<SessionStagiaire> sessionStagiaires = this.sessionStagiaireRepo.findBySession( sessionLigne) ;
+			for( SessionStagiaire sessionStagiaire : sessionStagiaires ) {
+				calcChiffreAffaireTotalHT += sessionStagiaire.calc_CA_HT_typeFinChoisiStagiaire();
+				LOG.info( "Session-Stagiaire-CA : " + 
+						sessionStagiaire.getSession().getId() + " - " +
+						sessionStagiaire.getStagiaire().getId() + " - " +
+						sessionStagiaire.calc_CA_HT_typeFinChoisiStagiaire());
+			}
+			sessionLigne.setCalcChiffreAffaireTotalHT( calcChiffreAffaireTotalHT);
 			
 			// En déduire la marge brute totale
-			sessionLigne.setCalcMargeBruteHT(calcMargeBruteHT);
+			calcMargeBruteHT = calcChiffreAffaireTotalHT - calcCoutTotalHT ;
+			sessionLigne.setCalcMargeBruteHT( calcMargeBruteHT);
 			
 			// En déduire la pourcentage de marge brute totale
-			sessionLigne.setCalcPourMargeBrute(calcPourMargeBrute);	
-			
+			calcPourMargeBrute = calcMargeBruteHT/ calcChiffreAffaireTotalHT;
+			sessionLigne.setCalcPourMargeBrute( calcPourMargeBrute);	
+						
 		} 
 		
-		/** Maj de la	 liste des session envoyée */
+		/** Gérér l'affichage des lignes de sessions en blanc/bleu */
+		/** Calculer les totaux */
 		List<SessionLigneVM> listeSessionVM = listeSessionsRepo.stream().map(session -> new SessionLigneVM( session)).collect( Collectors.toList());
 		int 	indice 						= 0;
+		int		totNbrFormation          	= 0 ;
+		int		totJourFormation          	= 0 ;
+		Float	totStagiaireFormation       = 0.0f ;
+		Float	tot_CA_HT_Formation         = 0.0f ;
+		Float	tot_Cout_HT_Formation       = 0.0f ;
+		
 		for( SessionLigneVM sessionLigne : listeSessionVM) {
 			// Gerer l'affichage des lignes sur le front
 			if( indice % 2 == 0) {
@@ -125,16 +163,37 @@ public class SessionController {
 				/** Ligne de session affichée en blanc */
 				sessionLigne.setValeurAttributClasseLigne("");
 			}
-			
+
+			/** Calculer les totaux */
+			totNbrFormation++ ;
+			totJourFormation          	+= sessionLigne.getNbrJoursFormation() ;
+			totStagiaireFormation       += sessionLigne.getNbrStagiairesFormation() ;
+			tot_CA_HT_Formation         += sessionLigne.getTot_CA_HT() ;
+			tot_Cout_HT_Formation       += sessionLigne.getTotCout_HT() ;
+					
 			indice++;
 			LOG.info( "*** Nom de session / salle : " 
 					+ sessionLigne.getNomSession() + " / " + sessionLigne.getNomSalleFormation());
 
 		}
+		Float	totMargeBrute_HT		= 0.0f;
+		Float	pourcTotMargeBrute_HT	= 0.0f;
+		
+		totMargeBrute_HT= tot_CA_HT_Formation - tot_Cout_HT_Formation ;
+		pourcTotMargeBrute_HT= totMargeBrute_HT /  tot_CA_HT_Formation ;
+		
+		SessionLigneVM 	sessionLigneTotaux 	= 
+				new SessionLigneVM( 
+						String.valueOf( totNbrFormation), 
+						totJourFormation, 		tot_Cout_HT_Formation,
+						tot_CA_HT_Formation,	totMargeBrute_HT, 		pourcTotMargeBrute_HT,
+						totStagiaireFormation);
+		listeSessionVM.add( sessionLigneTotaux) ;
 		
 		/** Renvoyer au front les résultats */
 		return listeSessionVM ;
 	}
+
 
 
 }

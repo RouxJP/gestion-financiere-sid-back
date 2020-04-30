@@ -1,14 +1,21 @@
 package dev.controller.vm;
 
 import java.time.LocalDate;
+import java.util.Locale;
 
 import dev.domain.Session;
 
 /**
  * Structure modèlisant une session servant à communiquer avec la WEB API : liste des sessions
+ * 
+ * @author JP ROUX
+ * 
  */
 public class SessionLigneVM {
-
+	private static final String FORMAT_MNT 			= "%,5.0f";
+	private static final String FORMAT_MNT_TOTAL 	= "%,7.0f";
+	
+	
 	/** Identifiant de la session */
 	private String nomSession;
 	
@@ -28,7 +35,7 @@ public class SessionLigneVM {
 	private Integer nbrJoursFormation;
 
 	/** Nombre de stagiaire de la formation : moyenne des stagiaires de la session au prorata du temps passé */
-	private Integer nbrStagiairesFormation;
+	private Float nbrStagiairesFormation;
 
 	/** Si les stagiaires proviennent de différentes entreprises on appelle ça une session inter-entreprises. */
 	/** On met le nom de l'entreprise si il y en a qu'une, sinon INTER */
@@ -41,25 +48,35 @@ public class SessionLigneVM {
 	private LocalDate dateFinSession;
 
 	/** Total des couts HT de la session  */
-	private Float totCout_HT;
+	private Float 	totCout_HT;
+	private String 	libTotCout_HT;
 
 	/** Total du chiffre d'affaire HT de la session  */
-	private Float tot_CA_HT;
+	private Float 	tot_CA_HT;
+	private String 	libTot_CA_HT;
 
 	/** Marge brute HT de la session  */
-	private Float margeBrute_HT;
+	private Float 	margeBrute_HT;
+	private String 	libMargeBrute_HT;
 
 	/** Pourcentage de marge brute de la session  */
-	private Float pourcMargeBrute;
+	private Float 	pourcMargeBrute;
 
 	/** Valeur de l'attribut class de la ligne de session */
 	private String valeurAttributClasseLigne;
 	
+	/** Valeur de l'attribut class de td utile pour la dernière ligne ( les totaux) */
+	private String valeurAttributTd;
+	
+	
 	/**
-	* @param pourcMargeBrute
+	 * Constructeur
+	 * 
+	* @param Session session
 	*/
 	public SessionLigneVM( Session session) {
 		super();
+		
 		this.nomSession 						= session.getNom();
 		this.nomCentre 							= session.getCentre().getNom();
 		this.nomFormation	 					= session.getFormation().getNom();
@@ -68,20 +85,65 @@ public class SessionLigneVM {
 		this.dateDebutSession 					= session.getDateDebut();
 		this.dateFinSession 					= session.getDateFin();
 		this.valeurAttributClasseLigne			= "";
+		this.valeurAttributTd					= "";
 		
 		/** Calculs financiers */
-		this.nomSociete 						= session.calculerNomSociete()	;	
-		this.nomSalleFormation					= session.calculerSalleFormation( session.getNom()) ;
-		this.totCout_HT 						= session.getCalcCoutTotalHT();
+		this.totCout_HT							= session.getCalcCoutTotalHT();
+		this.libTotCout_HT 						= String.format( Locale.FRANCE, FORMAT_MNT,  session.getCalcCoutTotalHT()).concat( " €");
 
-		/** TODO */
-		this.nbrStagiairesFormation 			= session.getCalcNbrStagiairesFormation();
 		this.tot_CA_HT 							= session.getCalcChiffreAffaireTotalHT();
+		this.libTot_CA_HT 						= String.format( Locale.FRANCE, FORMAT_MNT,  session.getCalcChiffreAffaireTotalHT()).concat( " €");
+		
 		this.margeBrute_HT 						= session.getCalcMargeBruteHT();
-		this.pourcMargeBrute 					= session.getCalcPourMargeBrute();
+		this.libMargeBrute_HT 					= String.format( Locale.FRANCE, FORMAT_MNT,  session.getCalcMargeBruteHT()).concat( " €");
+
+		this.pourcMargeBrute 					= (float) Math.round(100 * session.getCalcPourMargeBrute());
+	
+		this.nomSociete 						= session.getCalcNomSociete();
+		this.nomSalleFormation					= session.getCalcSalleFormation();
+		this.nbrStagiairesFormation 			= session.getCalcNbrStagiairesFormation();
+		
 	}
 	
+	/**
+	 * Constructeur pour la dernière ligne : totaux
+	 * 
+	* @param Session session
+	*/
+	public SessionLigneVM ( 
+			String 	totNbrFormations, 	int 	totNbrJoursFormation, 	Float 	totCout_HT,
+			Float	tot_CA_HT,			Float	totMargeBrute_HT, 		Float	pourcTotMargeBrute_HT,
+			Float	totNbrStagiairesFormation) {
+		super();
+
+		this.nomSession 						= "TOTAL";
+		this.nomCentre 							= totNbrFormations + " formations";
+		this.nomFormation	 					= "";
+		this.nomCertification 					= "";
+		this.nbrJoursFormation 					= totNbrJoursFormation;
+		this.dateDebutSession 					= null;
+		this.dateFinSession 					= null;
+		this.valeurAttributClasseLigne			= "bg-dgn";
+		this.valeurAttributTd					= "ltr";
 		
+		/** Calculs financiers */
+		this.totCout_HT							= totCout_HT;
+		this.libTotCout_HT 						= String.format( Locale.FRANCE, FORMAT_MNT_TOTAL,  totCout_HT).concat( " €");
+		
+		this.tot_CA_HT 							= tot_CA_HT;
+		this.libTot_CA_HT 						= String.format( Locale.FRANCE, FORMAT_MNT_TOTAL,  tot_CA_HT).concat( " €");
+		
+		this.margeBrute_HT 						= totMargeBrute_HT;
+		this.libMargeBrute_HT 					= String.format( Locale.FRANCE, FORMAT_MNT_TOTAL,  totMargeBrute_HT).concat( " €");
+		
+		this.pourcMargeBrute 					= (float) Math.round(100 * pourcTotMargeBrute_HT);
+	
+		this.nomSociete 						= "";
+		this.nomSalleFormation					= "";
+		this.nbrStagiairesFormation 			= totNbrStagiairesFormation;
+		
+	}
+
 	/** Getter
 	 * @return the nomSession
 	 */
@@ -116,12 +178,14 @@ public class SessionLigneVM {
 	public String getNomFormation() {
 		return nomFormation;
 	}
+
 	/** Setter
 	 * @param nomFormation the nomFormation to set
 	 */
 	public void setNomFormation(String nomFormation) {
 		this.nomFormation = nomFormation;
 	}
+
 	/** Getter
 	 * @return the nomCertification
 	 */
@@ -167,14 +231,14 @@ public class SessionLigneVM {
 	/** Getter
 	 * @return the nbrStagiairesFormation
 	 */
-	public Integer getNbrStagiairesFormation() {
+	public Float getNbrStagiairesFormation() {
 		return nbrStagiairesFormation;
 	}
 
 	/** Setter
 	 * @param nbrStagiairesFormation the nbrStagiairesFormation to set
 	 */
-	public void setNbrStagiairesFormation(Integer nbrStagiairesFormation) {
+	public void setNbrStagiairesFormation(Float nbrStagiairesFormation) {
 		this.nbrStagiairesFormation = nbrStagiairesFormation;
 	}
 
@@ -235,6 +299,20 @@ public class SessionLigneVM {
 	}
 
 	/** Getter
+	 * @return the libTotCout_HT
+	 */
+	public String getLibTotCout_HT() {
+		return libTotCout_HT;
+	}
+
+	/** Setter
+	 * @param libTotCout_HT the libTotCout_HT to set
+	 */
+	public void setLibTotCout_HT(String libTotCout_HT) {
+		this.libTotCout_HT = libTotCout_HT;
+	}
+
+	/** Getter
 	 * @return the tot_CA_HT
 	 */
 	public Float getTot_CA_HT() {
@@ -246,6 +324,20 @@ public class SessionLigneVM {
 	 */
 	public void setTot_CA_HT(Float tot_CA_HT) {
 		this.tot_CA_HT = tot_CA_HT;
+	}
+
+	/** Getter
+	 * @return the libTot_CA_HT
+	 */
+	public String getLibTot_CA_HT() {
+		return libTot_CA_HT;
+	}
+
+	/** Setter
+	 * @param libTot_CA_HT the libTot_CA_HT to set
+	 */
+	public void setLibTot_CA_HT(String libTot_CA_HT) {
+		this.libTot_CA_HT = libTot_CA_HT;
 	}
 
 	/** Getter
@@ -263,6 +355,20 @@ public class SessionLigneVM {
 	}
 
 	/** Getter
+	 * @return the libMargeBrute_HT
+	 */
+	public String getLibMargeBrute_HT() {
+		return libMargeBrute_HT;
+	}
+
+	/** Setter
+	 * @param libMargeBrute_HT the libMargeBrute_HT to set
+	 */
+	public void setLibMargeBrute_HT(String libMargeBrute_HT) {
+		this.libMargeBrute_HT = libMargeBrute_HT;
+	}
+
+	/** Getter
 	 * @return the pourcMargeBrute
 	 */
 	public Float getPourcMargeBrute() {
@@ -276,14 +382,12 @@ public class SessionLigneVM {
 		this.pourcMargeBrute = pourcMargeBrute;
 	}
 
-
 	/** Getter
 	 * @return the valeurAttributClasseLigne
 	 */
 	public String getValeurAttributClasseLigne() {
 		return valeurAttributClasseLigne;
 	}
-
 
 	/** Setter
 	 * @param valeurAttributClasseLigne the valeurAttributClasseLigne to set
@@ -292,7 +396,19 @@ public class SessionLigneVM {
 		this.valeurAttributClasseLigne = valeurAttributClasseLigne;
 	}
 
+	/** Getter
+	 * @return the valeurAttributTd
+	 */
+	public String getValeurAttributTd() {
+		return valeurAttributTd;
+	}
 
-   
+	/** Setter
+	 * @param valeurAttributTd the valeurAttributTd to set
+	 */
+	public void setValeurAttributTd(String valeurAttributTd) {
+		this.valeurAttributTd = valeurAttributTd;
+	}
+
 
 }

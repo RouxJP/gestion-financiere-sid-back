@@ -16,6 +16,9 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import dev.domain.SessionStagiaire;
 
 /**
@@ -23,15 +26,32 @@ import dev.domain.SessionStagiaire;
  * avec son libellé 			: libelle ( Pôle emploi, OPCA, Perso, Entreprise, Autre...)
  * 		sa durée de validité  	: date_deb, date_fin 
  *      son mode de calcul    	: unites
- *      ses valeurs de calculs	: nbr_heures, montant_ht, taux_tva
+ *      ses valeurs de calculs	: nbr_unites, montant_unite_ht, taux_tva
  *      
- * Les unités sont des montants :
+ * Les unités sont des types :
  *       - horaires par groupe
  *       - horaires par stagiaire
  *       - forfaitaires par stagiaire
  *       -...
+ * ********************     
+ * Le calculs de CA HT 
+ * ********************
  * On peut en déduire le calcul d'un type de financement par session-stagiaire
+ * Il suffit de faire :
+ *   montant_unite_ht * nbr_unites
+ * et pour avoir le CA HT il suffit de faire la somme de tous ces produits
+ *
+ * En effet si on a par exemple :   
+ *   - un financement horaire / stagiaire 	: montant_unite_ht  * 350 h   
+ *   - un financement horaire / groupe    	: montant_unite_ht  * 350 h   
+ *   - un financement horaire / stagiaire 	: montant_unite_ht  * 57 	jour   
+ *   - un financement horaire / groupe    	: montant_unite_ht  * 57 	jour   
+ *   - un financement forfaitaire stagiaire : montant_unite_ht  * 1 	session
  * 
+ * 
+  * ********************     
+ * Règle de gestion
+ * ********************
  * Un type de financement choisi a un contenu identique au type de financement 
  * possible à partir duquel on la créé
  * 
@@ -42,6 +62,8 @@ import dev.domain.SessionStagiaire;
 @Table(name = "TYPE_FINANCEMENT_CHOISI")
 @Cacheable
 public class TypeFinancementChoisi {
+
+	private static final Logger LOG = LoggerFactory.getLogger(dev.domain.finance.TypeFinancementChoisi.class);
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,13 +81,13 @@ public class TypeFinancementChoisi {
 	@Column(name = "DATE_FIN")
 	private LocalDate dateFin;
 	
-	/** Nombre d'heures financé pour ce type de financement */
-	@Column(name = "NBR_HEURE")
-	private int nbrHeure;
+	/** Nombre d'unités pour ce type de financement */
+	@Column(name = "NBR_UNITE")
+	private int nbrUnites;
 	
 	/** Montant HT du financement */
-	@Column(name = "MONTANT_HT")
-	private Float montantHT;
+	@Column(name = "MONTANT_UNITE_HT")
+	private Float montantUniteHT;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "UNITE")
@@ -80,41 +102,29 @@ public class TypeFinancementChoisi {
 	@JoinColumn(name = "ID_TYPE_FIN_POSSIBLE")
 	private TypeFinancementPossible typeFinancementPossible;
 	
-	/** Session/stagiaire */
-	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns( {
-        @JoinColumn(name = "ID_SESSION",  	referencedColumnName = "ID_SES", 	insertable=false, updatable=false),
-        @JoinColumn(name = "ID_STAGIAIRE", 	referencedColumnName = "ID_STAG", 	insertable=false, updatable=false)
-    })	
-	private SessionStagiaire sessionStagiaire;
+	/** Session stagiaire */
+	@ManyToOne(fetch = FetchType.LAZY)	
+	@JoinColumns({
+		@JoinColumn(name="ID_SESSION", referencedColumnName="ID_SES"),
+		@JoinColumn(name="ID_STAGIAIRE", referencedColumnName="ID_STAG")
+	})
+	SessionStagiaire sessionStagiaire ;
+	
+
+
+
 
 	/**
-	 * @param id
-	 * @param libelle
-	 * @param dateDebut
-	 * @param dateFin
-	 * @param nbrHeure
-	 * @param montantHT
-	 * @param uniteMontant
-	 * @param tauxTVA
-	 * @param typeFinancementPossible
-	 * @param sessionStagiaire
+	 * 
 	 */
-	public TypeFinancementChoisi(Long id, String libelle, LocalDate dateDebut, LocalDate dateFin, int nbrHeure,
-			Float montantHT, UniteMontantTypeFinancement uniteMontant, Float tauxTVA,
-			TypeFinancementPossible typeFinancementPossible, SessionStagiaire sessionStagiaire) {
+	public TypeFinancementChoisi() {
 		super();
-		this.id = id;
-		this.libelle = libelle;
-		this.dateDebut = dateDebut;
-		this.dateFin = dateFin;
-		this.nbrHeure = nbrHeure;
-		this.montantHT = montantHT;
-		this.uniteMontant = uniteMontant;
-		this.tauxTVA = tauxTVA;
-		this.typeFinancementPossible = typeFinancementPossible;
-		this.sessionStagiaire = sessionStagiaire;
+		// TODO Auto-generated constructor stub
 	}
+
+
+
+
 
 	/** Getter
 	 * @return the id
@@ -123,12 +133,20 @@ public class TypeFinancementChoisi {
 		return id;
 	}
 
+
+
+
+
 	/** Setter
 	 * @param id the id to set
 	 */
 	public void setId(Long id) {
 		this.id = id;
 	}
+
+
+
+
 
 	/** Getter
 	 * @return the libelle
@@ -137,12 +155,20 @@ public class TypeFinancementChoisi {
 		return libelle;
 	}
 
+
+
+
+
 	/** Setter
 	 * @param libelle the libelle to set
 	 */
 	public void setLibelle(String libelle) {
 		this.libelle = libelle;
 	}
+
+
+
+
 
 	/** Getter
 	 * @return the dateDebut
@@ -151,12 +177,20 @@ public class TypeFinancementChoisi {
 		return dateDebut;
 	}
 
+
+
+
+
 	/** Setter
 	 * @param dateDebut the dateDebut to set
 	 */
 	public void setDateDebut(LocalDate dateDebut) {
 		this.dateDebut = dateDebut;
 	}
+
+
+
+
 
 	/** Getter
 	 * @return the dateFin
@@ -165,6 +199,10 @@ public class TypeFinancementChoisi {
 		return dateFin;
 	}
 
+
+
+
+
 	/** Setter
 	 * @param dateFin the dateFin to set
 	 */
@@ -172,33 +210,53 @@ public class TypeFinancementChoisi {
 		this.dateFin = dateFin;
 	}
 
-	/** Getter
-	 * @return the nbrHeure
-	 */
-	public int getNbrHeure() {
-		return nbrHeure;
-	}
 
-	/** Setter
-	 * @param nbrHeure the nbrHeure to set
-	 */
-	public void setNbrHeure(int nbrHeure) {
-		this.nbrHeure = nbrHeure;
-	}
+
+
 
 	/** Getter
-	 * @return the montantHT
+	 * @return the nbrUnites
 	 */
-	public Float getMontantHT() {
-		return montantHT;
+	public int getNbrUnites() {
+		return nbrUnites;
 	}
 
+
+
+
+
 	/** Setter
-	 * @param montantHT the montantHT to set
+	 * @param nbrUnites the nbrUnites to set
 	 */
-	public void setMontantHT(Float montantHT) {
-		this.montantHT = montantHT;
+	public void setNbrUnites(int nbrUnites) {
+		this.nbrUnites = nbrUnites;
 	}
+
+
+
+
+
+	/** Getter
+	 * @return the montantUniteHT
+	 */
+	public Float getMontantUniteHT() {
+		return montantUniteHT;
+	}
+
+
+
+
+
+	/** Setter
+	 * @param montantUniteHT the montantUniteHT to set
+	 */
+	public void setMontantUniteHT(Float montantUniteHT) {
+		this.montantUniteHT = montantUniteHT;
+	}
+
+
+
+
 
 	/** Getter
 	 * @return the uniteMontant
@@ -207,12 +265,20 @@ public class TypeFinancementChoisi {
 		return uniteMontant;
 	}
 
+
+
+
+
 	/** Setter
 	 * @param uniteMontant the uniteMontant to set
 	 */
 	public void setUniteMontant(UniteMontantTypeFinancement uniteMontant) {
 		this.uniteMontant = uniteMontant;
 	}
+
+
+
+
 
 	/** Getter
 	 * @return the tauxTVA
@@ -221,12 +287,20 @@ public class TypeFinancementChoisi {
 		return tauxTVA;
 	}
 
+
+
+
+
 	/** Setter
 	 * @param tauxTVA the tauxTVA to set
 	 */
 	public void setTauxTVA(Float tauxTVA) {
 		this.tauxTVA = tauxTVA;
 	}
+
+
+
+
 
 	/** Getter
 	 * @return the typeFinancementPossible
@@ -235,12 +309,20 @@ public class TypeFinancementChoisi {
 		return typeFinancementPossible;
 	}
 
+
+
+
+
 	/** Setter
 	 * @param typeFinancementPossible the typeFinancementPossible to set
 	 */
 	public void setTypeFinancementPossible(TypeFinancementPossible typeFinancementPossible) {
 		this.typeFinancementPossible = typeFinancementPossible;
 	}
+
+
+
+
 
 	/** Getter
 	 * @return the sessionStagiaire
@@ -249,12 +331,29 @@ public class TypeFinancementChoisi {
 		return sessionStagiaire;
 	}
 
+
+
+
+
 	/** Setter
 	 * @param sessionStagiaire the sessionStagiaire to set
 	 */
 	public void setSessionStagiaire(SessionStagiaire sessionStagiaire) {
 		this.sessionStagiaire = sessionStagiaire;
 	}
-	
 
+
+
+
+
+	/**
+	 * Calculer le CA HT d'un type de financement choisi
+	 */
+	public float calc_CA_HT_typeFinChoisi() {
+		float ca_ht = this.montantUniteHT * this.nbrUnites;
+		LOG.info( "Session-Stagiaire-CA HT : " + 
+				this.sessionStagiaire.getSession().getId() + "-" + 
+				this.sessionStagiaire.getStagiaire().getId() + "-" + ca_ht	);
+		return ca_ht ;
+	}
 }
