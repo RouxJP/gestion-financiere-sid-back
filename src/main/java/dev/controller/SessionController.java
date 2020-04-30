@@ -96,11 +96,28 @@ public class SessionController {
 // OK		List<Session> listeSessionsRepo 	= this.sessionRepo.findByDateDebutBetween( ldDateDebut, ldDateFin);
 // OK		List<Session> listeSessionsRepo 	= this.sessionRepo.findByCentreNomStartingWithAndFormationNomStartingWith( etablissement, formation);
 // OK		List<Session> listeSessionsRepo 	= this.sessionRepo.findByCentreNomStartingWithAndFormationNomStartingWithAndFormationNomCertificationStartingWith( etablissement, formation, certif );
-// OK		List<Session> listeSessionsRepo 	= this.sessionRepo.findByCentreNomStartingWithAndFormationNomStartingWithAndFormationNomCertificationStartingWithAndSalleNomStartingWithAndSocieteNomStartingWith( etablissement, formation, certif, salle, entreprise );
-		List<Session> listeSessionsRepo 		= this.sessionRepo.findByCentreNomStartingWithAndFormationNomStartingWithAndFormationNomCertificationStartingWithAndSalleNomStartingWithAndSocieteNomStartingWithAndDateDebutBetweenOrDateFinBetween( etablissement, formation, certif, salle, entreprise, ldDateDebut, ldDateFin, ldDateDebut, ldDateFin);
+// OK		List<Session> listeSessionsRepo 		= this.sessionRepo.findByCentreNomStartingWithAndFormationNomStartingWithAndFormationNomCertificationStartingWithAndSalleNomStartingWithAndSocieteNomStartingWithAndDateDebutBetweenOrDateFinBetween( etablissement, formation, certif, salle, entreprise, ldDateDebut, ldDateFin, ldDateDebut, ldDateFin);
+		List<Session> listeSessionsRepo1 		= this.sessionRepo.findByCentreNomStartingWithAndFormationNomStartingWithAndFormationNomCertificationStartingWithAndSalleNomStartingWithAndSocieteNomStartingWithAndDateDebutBetween( etablissement, formation, certif, salle, entreprise, ldDateDebut, ldDateFin );
+		List<Session> listeSessionsRepo2 		= this.sessionRepo.findByCentreNomStartingWithAndFormationNomStartingWithAndFormationNomCertificationStartingWithAndSalleNomStartingWithAndSocieteNomStartingWithAndDateFinBetween( etablissement, formation, certif, salle, entreprise, ldDateDebut, ldDateFin );
+		LOG.info( "listeSessionsRepo1 : " + listeSessionsRepo1.size()); 
+		LOG.info( "listeSessionsRepo2 : " + listeSessionsRepo2.size());
+		/** La 2ème liste est concaténée à la première */
+		for( Session session2 : listeSessionsRepo2) {
+			boolean dejaPresente = false ;
+			for( Session session1 : listeSessionsRepo1) {
+				if( session1.getId() == session2.getId()) {
+					dejaPresente = true;
+					break;
+				}
+			}
+			if( ! dejaPresente) {
+				listeSessionsRepo1.add( session2);
+			}
+		}
+
 		
 		/** Intégrer les calculs dans la liste des sessions*/
-		for( Session sessionLigne : listeSessionsRepo) {
+		for( Session sessionLigne : listeSessionsRepo1) {
 			/** Calculer la societe, la salle, la moyenne de stagiaire */
 			sessionLigne.setCalcNomSociete( sessionLigne.calculerNomSociete());
 			sessionLigne.setCalcSalleFormation( sessionLigne.calculerSalleFormation( sessionLigne.getNom()));
@@ -146,7 +163,7 @@ public class SessionController {
 		
 		/** Gérér l'affichage des lignes de sessions en blanc/bleu */
 		/** Calculer les totaux */
-		List<SessionLigneVM> listeSessionVM = listeSessionsRepo.stream().map(session -> new SessionLigneVM( session)).collect( Collectors.toList());
+		List<SessionLigneVM> listeSessionVM = listeSessionsRepo1.stream().map(session -> new SessionLigneVM( session)).collect( Collectors.toList());
 		int 	indice 						= 0;
 		int		totNbrFormation          	= 0 ;
 		int		totJourFormation          	= 0 ;
